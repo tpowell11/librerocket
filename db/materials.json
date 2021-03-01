@@ -1,0 +1,11 @@
+{
+    "struct" : {
+        "Cardboard" : 0.68
+    },
+    "line" : {
+        "Kevlar" : 0.1
+    },
+    "chute" : {
+        "Nylon" : 0.6    
+    }
+}

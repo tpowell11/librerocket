@@ -1,0 +1,5 @@
+{
+    "TCmetadata" : "https://www.thrustcurve.org/api/v1/metadata.json",
+    "TCsearch" : "https://www.thrustcurve.org/api/v1/search.json",
+    "TCdownload" : "https://www.thrustcurve.org/api/v1/download.json"
+}
