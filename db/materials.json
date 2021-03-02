@@ -1,6 +1,8 @@
 {
     "struct" : {
-        "Cardboard" : 0.68
+        "Cardboard" : {
+            "density": 0.68
+        }
     },
     "line" : {
         "Kevlar" : 0.1
