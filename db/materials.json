@@ -2,12 +2,23 @@
     "struct" : {
         "Cardboard" : {
             "density": 0.68
+        },
+        "Fiberglass" : {
+            "density" : 1.4
         }
     },
     "line" : {
-        "Kevlar" : 0.1
+        "Kevlar" : {
+            "linDensity" : 0.3,
+            "tensileStrength" : 100
+        },
+        "Nylon" : {
+            "linDensity" : 0.1
+        }
     },
     "chute" : {
-        "Nylon" : 0.6    
+        "Nylon" : {
+            "flatDensity" : 0.25
+        }
     }
 }
