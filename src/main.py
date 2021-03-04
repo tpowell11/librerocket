@@ -1,5 +1,6 @@
 # import tkinter module 
 from tkinter import * 
+from tkinter import messagebox
 from tkinter.ttk import *
 from tkinter import ttk
 import diagramparts #functions to draw parts to the canvas
@@ -10,13 +11,20 @@ with open("../cfg/theme.json") as f: #themeing file for the gui
 # creating main tkinter window/toplevel 
 root = Tk() 
 root.configure(bg=cfg['backgroundColor'])
-#ttk.Style().configure("TButton", padding=6, relief="flat",bg=cfg["partbuttonColor"])
-# this will create a label widget 
-outlineframe = LabelFrame(root,text = 'Outline')
-outlineframe.grid(row=0,column=0)
-partsframe = LabelFrame(root, text = 'Parts')
-partsframe.grid(row = 0, column = 1)
-diagramframe = LabelFrame(root,text = 'Diagram')
+tabControl = ttk.Notebook(root)
+designTab = ttk.Frame(tabControl)
+motorTab = ttk.Frame(tabControl)
+calcTab = ttk.Frame(tabControl)
+tabControl.add(designTab, text = "Design")
+tabControl.add(motorTab, text = "Motor Configuration")
+tabControl.add(calcTab, text = "Calculations")
+tabControl.grid(row=0)
+
+outlineframe = LabelFrame(designTab,text = 'Outline')
+outlineframe.grid(row=1,column=0)
+partsframe = LabelFrame(designTab, text = 'Parts')
+partsframe.grid(row = 1, column = 1)
+diagramframe = LabelFrame(designTab,text = 'Diagram')
 diagramframe.grid(row=4)
 
 def on_click_part():
@@ -47,12 +55,18 @@ c1.grid(row = 2, column = 0, sticky = W, columnspan = 2)
 #img1 = img.subsample(4, 4) 
 
 def on_double_click(event):
-    print("selected "+str(event.widget.focus())+" from treeview")
+    sel = event.widget.focus()
+    print("selected "+str(sel)+" from treeview")
+    if sel == 'b':
+        messagebox.showinfo("information","Information")  
+def on_del_tree(event):
+    print("deleteed "+str(event.widget.focus())+" from treeview")
+    treeview.delete(event.widget.focus())#remove item from treeview
 # Creating treeview window
-
 treeview = ttk.Treeview(outlineframe)  
 #treeview.bind("<<TreeviewSelect>>", root.on_tree_select)
-treeview.bind("<Double-Button-1>", on_double_click)  
+treeview.bind("<Double-Button-1>", on_double_click)
+treeview.bind("d",on_del_tree)
 treeview.grid(row = 0, column = 0) #grid the view to root
 # Inserting items to the treeview 
 # Inserting parent
@@ -67,10 +81,13 @@ for item in tree: #this only supports level 1 nesting
             treeview.insert(str(parent),'end',str(subitem),text=str(subitem))
     else:
         treeview.insert('','end',str(item),text = str(item))
+    if item != "Rocket" and type(item) != list:
+    #if item != "Rocket" :
+        treeview.move(item, "Rocket", 'end')
 # # Placing each child items in parent widget
-treeview.move('b', 'Rocket', 'end')  
-treeview.move('c', 'Rocket', 'end')
-treeview.move('d', 'Rocket', 'end')
+# treeview.move('b', 'Rocket', 'end')  
+# treeview.move('c', 'Rocket', 'end')
+# treeview.move('d', 'Rocket', 'end')
 # def on_tree_select(event):
 #         print("selected items:")
 #         for item in treeview.selection():
