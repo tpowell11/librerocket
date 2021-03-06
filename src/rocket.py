@@ -4,29 +4,52 @@ import json
 class component(object):
     "Basic fields for all components"
     name: str
-    
     mass: float
     diameter: float
     length: float
     position: float
 class motor(component):
     "Fields for motors"
-    def __init__(self, Itot: float, Diameter: float, Mass: float, Length: float, Curve: dict):
+    def __init__(self,Name: str, Itot: float, Diameter: float, Mass: float, Length: float, Curve: dict):
         #Moves data into the correct areas
+        self.name = Name
         self.Itot = Itot
         self.diameter = Diameter
         self.mass = Mass
         self.length = Length
         self.curve = Curve
+    def getJson(self):
+        dict = {
+            "name":self.name,
+            "type":'motor',
+            "data":{
+                "mass":self.mass,
+                "length":self.length,
+                "diameter":self.diameter,
+                "length":self.length,
+                "Itot":self.Itot,
+            }
+        }
 class tube(component):
-    def __init__(self, Mass: float, Length: float, WallTh: float):
+    def __init__(self,Name: str, Mass: float, Length: float, Diameter: float, WallTh: float):
+        self.name = Name
         self.mass = Mass
+        self.diameter = Diameter
         self.length = Length
         self.WallTh = WallTh
     def getJson(self):
         dict = {
-            "mass":self.mass,
-            "length":self.length,
-            "WallTh":self.WallTh
+            "name":self.name,
+            "type":'tube',
+            "data":{
+                "mass":self.mass,
+                "length":self.length,
+                "diameter":self.diameter,
+                "WallTh":self.WallTh
+            }
         }
         return json.dumps(dict)
+class nosecone(component):
+    def __init__(self, Name: str, Generator: int, Mass: float, Length: float, Shoulder: bool, ShoulderDiameter: float):
+        self.name = Name
+        self.mass = Mass
