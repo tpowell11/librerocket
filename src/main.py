@@ -46,9 +46,7 @@ for part in parts:
     # if col != 0:
     #     row =0
     row += 1
-# checkbutton widget 
-c1 = Checkbutton(root, text = "Preserve") 
-c1.grid(row = 2, column = 0, sticky = W, columnspan = 2) 
+
 
 # adding image (remember image should be PNG and not JPG) 
 #img = PhotoImage(file = r"../img/wierstrass.png") 
