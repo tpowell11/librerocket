@@ -1,6 +1,8 @@
 #classes for LibreRocket
 # all classes which store components have a getJson method which returns a json string
 import json
+import random #provides random hex IDs
+usedIds = [] #stores all used hexadecimal ids
 class component(object):
     "Basic fields for all components"
     name: str
