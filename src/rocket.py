@@ -76,4 +76,7 @@ class trapfins(component):
 class ellipfins(component):
     "automatic ellptical fins"
 class freefins(component):
+    def __init__(self,Name: str, Points: dict):
+        self.name = Name
+        self.points = Points
     "freeform fins"

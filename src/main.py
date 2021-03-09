@@ -1,6 +1,6 @@
 # import tkinter module 
 from abc import get_cache_token
-from os import truncate
+from os import times, truncate
 from tkinter import * 
 from tkinter import messagebox
 from tkinter.ttk import *
@@ -84,7 +84,7 @@ treeview.bind("d",on_del_tree)
 treeview.grid(row = 0, column = 0) #grid the view to root
 # Inserting items to the treeview 
 # Inserting parent
-def maketreeviewTEMP():
+def maketreeviewlistTEMP():
     tree=[rocket.fileParent('Rocket'),
         rocket.tube('alex',24.3,62.3,57.3,0.2),
         rocket.tube('jon',32,56,89,0.2),
@@ -92,19 +92,43 @@ def maketreeviewTEMP():
         rocket.motor('m',40,24,56,40,{})]
     for item in tree: #this only supports level 1 nesting
         # print(item)
-        # print(type(item))
+        print(type(item))
         if type(item) == list: #detect if the given item is a list
-            treeview.insert('','end',str(item[0].name),text = str(item[0].name))
+            treeview.insert('','end',item[0],text = item[0].name)
             parent = item[0]
             del item[0] #get rid of the first element once it as been stored
             for subitem in item:
-                treeview.insert(str(parent.name),'end',str(subitem.name),text=str(subitem.name))
+                treeview.insert(parent,'end',subitem.name,text=subitem.name)
         elif type(item) != str:
-            treeview.insert('','end',str(item.name),text=str(item.name))
+            treeview.insert('','end',item.name,text=item.name)
         #moving items to parents
         if type(item) != rocket.fileParent and type(item) != list:
             treeview.move(item.name,'Rocket','end')
+#maketreeviewlistTEMP()
+def maketreeviewTEMP():
+    tree = (
+        rocket.fileParent('Rocket'),
+        rocket.tube('alex',24.3,62.3,57.3,0.2),
+        rocket.tube('jon',32,56,89,0.2),
+        [rocket.tube('a',43,56,9,0.2),
+            rocket.tube('b',34,25,8.,0.2),
+            rocket.tube('c',23,10,7,0.2)], #the part in {} is a set, the rest is tuple
+        rocket.motor('m',40,24,56,40,{})
+    )
+    for item in tree:
+        if type(item) != list:
+            #print(item)
+            treeview.insert('','end',item,text = item.name)
+        elif type(item) == list:
+            par = item[0]
+            treeview.insert('','end',par,text = par.name)
+            del item[0]
+            for si in item:
+                print(si)
+                treeview.insert(par,'end',si,text = si.name)
+            
 maketreeviewTEMP()
+
 canv = Canvas(diagramframe,bd=4)
 canv.grid(row=4,columnspan=3)
 coord = 10, 50, 240, 210
