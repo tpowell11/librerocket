@@ -7,19 +7,22 @@ import diagramparts #functions to draw parts to the canvas
 import rocket
 
 #from partdialogs import tubedialog
-import partdialogs
+#import partdialogs
 import json #for reading the GUI config json
 with open("../cfg/theme.json") as f: #themeing file for the gui
     cfg = json.load(f)
 # creating main tkinter window/toplevel 
 root = Tk() #main window root
 root.configure(bg=cfg['backgroundColor']) #loads color options from cfg json
-# def tubedialog(root):
-#     "the dialog diplayed when a bodytube element is double clicked in tree or in diagram"
-#     dialog = Toplevel(root)#make the dialog root
-#     button = Button(dialog,text='test')
-#     button.pack()
-#     print('test')
+def my_open():
+    my_w_child=Toplevel(root) # Child window 
+    my_w_child.geometry("200x200")  # Size of the window 
+    my_w_child.title("www.plus2net.com")
+
+    my_str1 = StringVar()
+    l1 = Label(my_w_child,  textvariable=my_str1 )
+    l1.grid(row=1,column=2) 
+    my_str1.set("Hi I am Child window")
 
 menu = Menu(root) #top-of-window menu
 tabControl = ttk.Notebook(root) #tabbed layout for multiple tasks
@@ -82,7 +85,7 @@ def on_del_tree(event):
 # Creating treeview window
 treeview = ttk.Treeview(outlineframe)  
 #treeview.bind("<<TreeviewSelect>>", root.on_tree_select)
-treeview.bind("<Double-Button-1>", lambda:partdialogs.tubedialog())
+treeview.bind("<Double-Button-1>", lambda x :my_open())
 treeview.bind("d",on_del_tree)
 treeview.grid(row = 0, column = 0) #grid the view to root
 # Inserting items to the treeview 
