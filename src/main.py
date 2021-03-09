@@ -1,4 +1,5 @@
 # import tkinter module 
+from abc import get_cache_token
 from os import truncate
 from tkinter import * 
 from tkinter import messagebox
@@ -75,40 +76,35 @@ moveupbutton = Button(treeviewcontrols, text = "Move up")
 moveupbutton.grid(row=0)
 movedownbutton = Button(treeviewcontrols,text = "Move down")
 movedownbutton.grid(row=1)
-deletebutton = Button(treeviewcontrols, text="Delete")
+deletebutton = Button(treeviewcontrols, text="Delete") #TODO make this button remove items from the view
 deletebutton.grid(row=2)
-#treeview.bind("<<TreeviewSelect>>", root.on_tree_select)
-treeview.bind("<Double-Button-1>", lambda x :partdialogs.tubedialog())
+
+treeview.bind("<Double-Button-1>", partdialogs.dialogselector)
 treeview.bind("d",on_del_tree)
 treeview.grid(row = 0, column = 0) #grid the view to root
 # Inserting items to the treeview 
 # Inserting parent
 def maketreeviewTEMP():
-    tree=["Rocket",
+    tree=[rocket.fileParent('Rocket'),
         rocket.tube('alex',24.3,62.3,57.3,0.2),
         rocket.tube('jon',32,56,89,0.2),
         [rocket.tube('a',43,56,9,0.2),rocket.tube('b',34,25,8.,0.2),rocket.tube('c',23,10,7,0.2)],
         rocket.motor('m',40,24,56,40,{})]
     for item in tree: #this only supports level 1 nesting
-        print(item)
-        print(type(item))
-        if type(item) == list:
-            treeview.insert('','end',str(item[0]),text = str(item[0]))
+        # print(item)
+        # print(type(item))
+        if type(item) == list: #detect if the given item is a list
+            treeview.insert('','end',str(item[0].name),text = str(item[0].name))
             parent = item[0]
-            del item[0]
+            del item[0] #get rid of the first element once it as been stored
             for subitem in item:
-                treeview.insert(str(parent),'end',str(subitem),text=str(subitem))
-        elif type(item) == str:
-            treeview.insert('','end',item,text = item)
+                treeview.insert(str(parent.name),'end',str(subitem.name),text=str(subitem.name))
         elif type(item) != str:
             treeview.insert('','end',str(item.name),text=str(item.name))
-        if type(item) == str and type(item) != list and item != "Rocket":
-            treeview.move(item, "Rocket", 'end')
-        elif item == "Rocket":
-            pass
-        else:
-            treeview.move(item.name,"Rocket",'end')
-
+        #moving items to parents
+        if type(item) != rocket.fileParent and type(item) != list:
+            treeview.move(item.name,'Rocket','end')
+maketreeviewTEMP()
 canv = Canvas(diagramframe,bd=4)
 canv.grid(row=4,columnspan=3)
 coord = 10, 50, 240, 210

@@ -3,6 +3,14 @@
 import json
 import random #provides random hex IDs
 usedIds = [] #stores all used hexadecimal ids
+class fileParent(object):
+    "The top level class for the file"
+    def __init__(self,Name: str):
+        self.name = Name
+class stage(object):
+    "class for rocket stages"
+    def __init__(self, Name: str):
+        self.name = Name
 class component(object):
     "Basic fields for all components"
     name: str
@@ -10,6 +18,7 @@ class component(object):
     diameter: float
     length: float
     position: float
+    material: str #refers to a material in materials.json
 class motor(component):
     objtype='motor'
     "Fields for motors"
@@ -33,6 +42,7 @@ class motor(component):
                 "Itot":self.Itot,
             }
         }
+        return json.dumps(dict)
 class tube(component):
     objtype='tube'
     def __init__(self,Name: str, Mass: float, Length: float, Diameter: float, WallTh: float):
@@ -57,3 +67,13 @@ class nosecone(component):
     def __init__(self, Name: str, Generator: int, Mass: float, Length: float, Shoulder: bool, ShoulderDiameter: float):
         self.name = Name
         self.mass = Mass
+        self.generator = Generator
+        self.length = Length
+        self.shoulder = Shoulder
+        self.shoulderdiameter = ShoulderDiameter
+class trapfins(component):
+    "automatc trapesoidal fins"
+class ellipfins(component):
+    "automatic ellptical fins"
+class freefins(component):
+    "freeform fins"
