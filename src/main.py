@@ -7,12 +7,13 @@ import diagramparts #functions to draw parts to the canvas
 import rocket
 
 #from partdialogs import tubedialog
-#import partdialogs
+import partdialogs
 import json #for reading the GUI config json
 with open("../cfg/theme.json") as f: #themeing file for the gui
     cfg = json.load(f)
 # creating main tkinter window/toplevel 
 root = Tk() #main window root
+partdialogs.initdialogs(root)
 root.configure(bg=cfg['backgroundColor']) #loads color options from cfg json
 def my_open():
     my_w_child=Toplevel(root) # Child window 
@@ -85,7 +86,7 @@ def on_del_tree(event):
 # Creating treeview window
 treeview = ttk.Treeview(outlineframe)  
 #treeview.bind("<<TreeviewSelect>>", root.on_tree_select)
-treeview.bind("<Double-Button-1>", lambda x :my_open())
+treeview.bind("<Double-Button-1>", lambda x :partdialogs.tubedialog())
 treeview.bind("d",on_del_tree)
 treeview.grid(row = 0, column = 0) #grid the view to root
 # Inserting items to the treeview 
