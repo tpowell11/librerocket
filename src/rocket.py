@@ -11,6 +11,7 @@ class component(object):
     length: float
     position: float
 class motor(component):
+    objtype='motor'
     "Fields for motors"
     def __init__(self,Name: str, Itot: float, Diameter: float, Mass: float, Length: float, Curve: dict):
         #Moves data into the correct areas
@@ -33,6 +34,7 @@ class motor(component):
             }
         }
 class tube(component):
+    objtype='tube'
     def __init__(self,Name: str, Mass: float, Length: float, Diameter: float, WallTh: float):
         self.name = Name
         self.mass = Mass
