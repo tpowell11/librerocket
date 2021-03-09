@@ -5,21 +5,38 @@ from tkinter.ttk import *
 from tkinter import ttk
 import diagramparts #functions to draw parts to the canvas
 import rocket
+
+#from partdialogs import tubedialog
+import partdialogs
 import json #for reading the GUI config json
 with open("../cfg/theme.json") as f: #themeing file for the gui
     cfg = json.load(f)
 # creating main tkinter window/toplevel 
-root = Tk() 
-root.configure(bg=cfg['backgroundColor'])
-tabControl = ttk.Notebook(root)
-designTab = ttk.Frame(tabControl)
-motorTab = ttk.Frame(tabControl)
-calcTab = ttk.Frame(tabControl)
+root = Tk() #main window root
+root.configure(bg=cfg['backgroundColor']) #loads color options from cfg json
+# def tubedialog(root):
+#     "the dialog diplayed when a bodytube element is double clicked in tree or in diagram"
+#     dialog = Toplevel(root)#make the dialog root
+#     button = Button(dialog,text='test')
+#     button.pack()
+#     print('test')
+
+menu = Menu(root) #top-of-window menu
+tabControl = ttk.Notebook(root) #tabbed layout for multiple tasks
+designTab = ttk.Frame(tabControl) #the rocket design tab
+motorTab = ttk.Frame(tabControl) #the motor selection and data entry tab
+calcTab = ttk.Frame(tabControl) #simulation / calculation tab
+#pushing tabs to container
 tabControl.add(designTab, text = "Design")
 tabControl.add(motorTab, text = "Motor Configuration")
 tabControl.add(calcTab, text = "Calculations")
 tabControl.grid(row=0)
 
+#
+# Design Tab
+#
+
+# Frame definitions for designTab
 outlineframe = LabelFrame(designTab,text = 'Outline')
 outlineframe.grid(row=1,column=0)
 partsframe = LabelFrame(designTab, text = 'Parts')
@@ -27,10 +44,12 @@ partsframe.grid(row = 1, column = 1)
 diagramframe = LabelFrame(designTab,text = 'Diagram')
 diagramframe.grid(row=4)
 
+# Handlers for UI events on Design tab
 def on_click_part():
+    "activates when one of the part creation buttons is clicked"
     print("clicked part")
-
-parts = ["1","2","3","4","|","5","6","7","8","|","9","10","11","12"]
+# 
+parts = ["1","2","3","4","|","5","6","7","8","|","9","10","11","12","|","13"]
 #parts = ["1","2","3","4","|","5","6","7","8"]
 row = 0
 col=0
@@ -56,14 +75,14 @@ def on_double_click(event):
     sel = event.widget.focus()
     print("selected "+str(sel)+" from treeview")
     if sel == 'b':
-        messagebox.showinfo("information","Information")  
+        messagebox.showinfo("information",partsframe)  
 def on_del_tree(event):
     print("deleteed "+str(event.widget.focus())+" from treeview")
     treeview.delete(event.widget.focus())#remove item from treeview
 # Creating treeview window
 treeview = ttk.Treeview(outlineframe)  
 #treeview.bind("<<TreeviewSelect>>", root.on_tree_select)
-treeview.bind("<Double-Button-1>", on_double_click)
+treeview.bind("<Double-Button-1>", lambda:partdialogs.tubedialog())
 treeview.bind("d",on_del_tree)
 treeview.grid(row = 0, column = 0) #grid the view to root
 # Inserting items to the treeview 
@@ -82,21 +101,23 @@ for item in tree: #this only supports level 1 nesting
     if item != "Rocket" and type(item) != list:
     #if item != "Rocket" :
         treeview.move(item, "Rocket", 'end')
-# # Placing each child items in parent widget
-# treeview.move('b', 'Rocket', 'end')  
-# treeview.move('c', 'Rocket', 'end')
-# treeview.move('d', 'Rocket', 'end')
-# def on_tree_select(event):
-#         print("selected items:")
-#         for item in treeview.selection():
-#             item_text = treeview.item(item,"text")
-#             print(item_text)
-
-
 
 canv = Canvas(diagramframe,bd=4)
 canv.grid(row=4,columnspan=3)
 coord = 10, 50, 240, 210
 #arc = canv.create_arc(coord, start=0, extent=150, fill="red")
 tube = diagramparts.drawTube(canv,100,100)
+
+#
+# Motor Tab
+#
+# Frame definitions for motorTab
+mountsList = LabelFrame(motorTab, text = 'Motor Mounts')
+mountsList.grid(row=0,column=0)
+motorsList = LabelFrame(motorTab, text = "Motor Configurations")
+# Elements for motortab
+mntlist = ttk.Treeview(mountsList)
+mntlist.grid(row=0,column=0)
+
+
 mainloop() 
