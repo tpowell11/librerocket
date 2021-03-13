@@ -1,0 +1,34 @@
+:root{
+    --backgroundColor: #f0f0f0
+    --textColor: #FFFFFF
+}
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap'); /*google fonts for Open Sans*/
+*{
+    font-family: 'Open Sans', sans-serif;
+}
+
+.title {
+    background-color:var(--backgroundColor);
+}
+.collapsible {
+    background-color: #777;
+    color: white;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+  }
+  
+  .active, .collapsible:hover {
+    background-color: #555;
+  }
+  
+  .content {
+    padding: 0 18px;
+    display: none;
+    overflow: hidden;
+    background-color: #f1f1f1;
+  }

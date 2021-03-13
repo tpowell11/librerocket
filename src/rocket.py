@@ -1,8 +1,21 @@
 #classes for LibreRocket
 # all classes which store components have a getJson method which returns a json string
 import json
-import random #provides random hex IDs
 usedIds = [] #stores all used hexadecimal ids
+class Rocket(object):
+    "the main class for rocket files"
+    parts: list or tuple #stores the list of the rocket's components
+    def __init__(self,Filename,Parts=[]):
+        self.parts=Parts
+        self.filename = Filename
+    def SaveJson(self,path: str):
+        "dumps json of the file, then saves to the specified path"
+        dict = {
+            "filename":self.filename,
+            "parts":self.parts
+        }
+        with open(str(path)) as f:
+            f.write(json.dumps(dict))
 class fileParent(object):
     "The top level class for the file"
     def __init__(self,Name: str):
