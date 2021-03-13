@@ -11,18 +11,29 @@ import json #for reading the GUI config json
 with open("../cfg/theme.json") as f: #themeing file for the gui
     cfg = json.load(f)
 
+# rock = rocket.Rocket('test/test.json',
+#                      [
+#                         rocket.fileParent('Rocket'),
+#                         rocket.tube('alex',24.3,62.3,57.3,0.2),
+#                         rocket.tube('jon',32,56,89,0.2),
+#                         [rocket.tube('a',43,56,9,0.2),
+#                             rocket.tube('b',34,25,8.,0.2),
+#                             rocket.tube('c',23,10,7,0.2)], #the part in {} is a set, the rest is tuple
+#                         rocket.motor('m',40,24,56,40,{})
+#                      ]
+#                      )
 rock = rocket.Rocket('test/test.json',
                      [
                         rocket.fileParent('Rocket'),
                         rocket.tube('alex',24.3,62.3,57.3,0.2),
                         rocket.tube('jon',32,56,89,0.2),
-                        [rocket.tube('a',43,56,9,0.2),
-                            rocket.tube('b',34,25,8.,0.2),
-                            rocket.tube('c',23,10,7,0.2)], #the part in {} is a set, the rest is tuple
+                        rocket.tube('a',43,56,9,0.2),
+                            rocket.tube('b',34,25,8.,0.2,'a'),
+                            rocket.tube('c',23,10,7,0.2,'a'), #the part in {} is a set, the rest is tuple
                         rocket.motor('m',40,24,56,40,{})
                      ]
                      )
-rock.SaveJson('test.json')
+#rock.SaveJson('test.json')
 
 # creating main tkinter window/toplevel 
 root = Tk() #main window root
@@ -101,21 +112,13 @@ treeview.grid(row = 0, column = 0) #grid the view to root
 # Inserting items to the treeview 
 # Inserting parent
 def maketreeviewTEMP():
-    
     for item in rock.parts:
         if type(item) == rocket.fileParent:
-            treeview.insert('','end',item,text= item.name) #makes the root element of the rocket
-        elif type(item) != list and type(item) != rocket.fileParent:
-            #print(item)
-            treeview.insert(rock.parts[0],'end',item,text = item.name)
-        elif type(item) == list:
-            par = item[0]
-            treeview.insert('','end',par,text = par.name)
-            del item[0]
-            for si in item:
-                #print(si)
-                treeview.insert(par,'end',si,text = si.name)
-            treeview.move(par,rock.parts[0],'end')
+            treeview.insert('','end',item.name,text = item.name)
+        elif item.parent != '':
+            treeview.insert(item.parent,'end',item.name,text = item.name)
+        else:
+            treeview.insert(rock.parts[0].name,'end',item.name,text = item.name)
 maketreeviewTEMP()
 
 canv = Canvas(diagramframe,bd=4)
