@@ -45,12 +45,14 @@ class component(object):
     length: float
     position: float
     material: str #refers to a material in materials.json
+    parent = '' #contains the parent for a component
 class motor(component):
     objtype='motor'
     "Fields for motors"
-    def __init__(self,Name: str, Itot: float, Diameter: float, Mass: float, Length: float, Curve: dict):
+    def __init__(self,Name: str, Itot: float, Diameter: float, Mass: float, Length: float, Curve: dict, Parent = ''):
         #Moves data into the correct areas
         self.name = Name
+        self.parent = Parent
         self.Itot = Itot
         self.diameter = Diameter
         self.mass = Mass
@@ -59,6 +61,7 @@ class motor(component):
     def getJson(self):
         data = {
             "name":self.name,
+            "parent":self.parent,
             "type":'motor',
             "data":{
                 "mass":self.mass,
@@ -71,8 +74,9 @@ class motor(component):
         return json.dumps(data)
 class tube(component):
     objtype='tube'
-    def __init__(self,Name: str, Mass: float, Length: float, Diameter: float, WallTh: float):
+    def __init__(self,Name: str, Mass: float, Length: float, Diameter: float, WallTh: float, Parent = ''):
         self.name = Name
+        self.parent = Parent
         self.mass = Mass
         self.diameter = Diameter
         self.length = Length
@@ -80,6 +84,7 @@ class tube(component):
     def getJson(self):
         data = {
             "name":self.name,
+            "parent":self.parent,
             "type":'tube',
             "data":{
                 "mass":self.mass,
