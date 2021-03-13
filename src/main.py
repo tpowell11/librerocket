@@ -10,16 +10,20 @@ import partdialogs
 import json #for reading the GUI config json
 with open("../cfg/theme.json") as f: #themeing file for the gui
     cfg = json.load(f)
-rock = rocket.Rocket
-rock.parts = (
-        rocket.fileParent('Rocket'),
-        rocket.tube('alex',24.3,62.3,57.3,0.2),
-        rocket.tube('jon',32,56,89,0.2),
-        [rocket.tube('a',43,56,9,0.2),
-            rocket.tube('b',34,25,8.,0.2),
-            rocket.tube('c',23,10,7,0.2)], #the part in {} is a set, the rest is tuple
-        rocket.motor('m',40,24,56,40,{})
-    )
+
+rock = rocket.Rocket('test/test.json',
+                     [
+                        rocket.fileParent('Rocket'),
+                        rocket.tube('alex',24.3,62.3,57.3,0.2),
+                        rocket.tube('jon',32,56,89,0.2),
+                        [rocket.tube('a',43,56,9,0.2),
+                            rocket.tube('b',34,25,8.,0.2),
+                            rocket.tube('c',23,10,7,0.2)], #the part in {} is a set, the rest is tuple
+                        rocket.motor('m',40,24,56,40,{})
+                     ]
+                     )
+rock.SaveJson('test.json')
+
 # creating main tkinter window/toplevel 
 root = Tk() #main window root
 root.title('LibreRocket V0')

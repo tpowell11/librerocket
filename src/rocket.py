@@ -3,23 +3,36 @@
 import json
 usedIds = [] #stores all used hexadecimal ids
 class Rocket(object):
-    "the main class for rocket files"
-    parts: list or tuple #stores the list of the rocket's components
+    "the main class for rocket files, has the method to actually save the file"
+    parts: list #stores the list of the rocket's components
     def __init__(self,Filename,Parts=[]):
         self.parts=Parts
         self.filename = Filename
     def SaveJson(self,path: str):
         "dumps json of the file, then saves to the specified path"
-        dict = {
+        j = ''
+        for item in self.parts:
+            if type(item) == list:
+                for ite in item:
+                    j += ite.getJson()
+                del item
+        data = {
             "filename":self.filename,
-            "parts":self.parts
+            "parts":j + str(self.parts.getJson())
         }
-        with open(str(path)) as f:
-            f.write(json.dumps(dict))
+        with open(str(path),'w+') as f:
+            f.write(json.dumps(data))
+            f.close()
+            
 class fileParent(object):
     "The top level class for the file"
     def __init__(self,Name: str):
         self.name = Name
+    def getJson(self) -> str:
+        data = {
+            'name':self.name
+        }
+        return json.dumps(data)
 class stage(object):
     "class for rocket stages"
     def __init__(self, Name: str):
@@ -44,7 +57,7 @@ class motor(component):
         self.length = Length
         self.curve = Curve
     def getJson(self):
-        dict = {
+        data = {
             "name":self.name,
             "type":'motor',
             "data":{
@@ -55,7 +68,7 @@ class motor(component):
                 "Itot":self.Itot,
             }
         }
-        return json.dumps(dict)
+        return json.dumps(data)
 class tube(component):
     objtype='tube'
     def __init__(self,Name: str, Mass: float, Length: float, Diameter: float, WallTh: float):
@@ -65,7 +78,7 @@ class tube(component):
         self.length = Length
         self.WallTh = WallTh
     def getJson(self):
-        dict = {
+        data = {
             "name":self.name,
             "type":'tube',
             "data":{
@@ -75,7 +88,7 @@ class tube(component):
                 "WallTh":self.WallTh
             }
         }
-        return json.dumps(dict)
+        return json.dumps(data)
 class nosecone(component):
     def __init__(self, Name: str, Generator: int, Mass: float, Length: float, Shoulder: bool, ShoulderDiameter: float):
         self.name = Name

@@ -1,34 +1,37 @@
 :root{
-    --backgroundColor: #f0f0f0
-    --textColor: #FFFFFF
+    --backgroundColor: #3d3d3d;
+    --textColor: #FFFFFF;
 }
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap'); /*google fonts for Open Sans*/
 *{
     font-family: 'Open Sans', sans-serif;
+    background-color:var(--backgroundColor);
+    color:var(--textColor)
 }
 
-.title {
-    background-color:var(--backgroundColor);
-}
 .collapsible {
-    background-color: #777;
+    background-color:#7f7f7f;
     color: white;
     cursor: pointer;
     padding: 18px;
-    width: 100%;
+    width: 90%;
     border: none;
     text-align: left;
     outline: none;
     font-size: 15px;
-  }
-  
-  .active, .collapsible:hover {
+    margin-left: 5%;
+}
+
+.active, .collapsible:hover {
     background-color: #555;
-  }
-  
-  .content {
+}
+
+.content {
     padding: 0 18px;
     display: none;
     overflow: hidden;
-    background-color: #f1f1f1;
-  }
+    background-color:var(--backgroundColor);
+}
+.subcontent{
+    margin-left: 7%;
+}
