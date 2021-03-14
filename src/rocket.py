@@ -7,7 +7,7 @@ class Rocket(object):
     def __init__(self,Filename,Parts=[]):
         self.parts=Parts
         self.filename = Filename
-    def SaveJson(self, path:str):
+    def SaveJson(self, path='.'):
         data={
             "filename":self.filename,
             "type":__name__,
@@ -41,6 +41,9 @@ def loadJsontoObject(filename:str) -> Rocket:
             ))
             print('found tube')
         elif typ == 'nosecone':
+            parts.append(nosecone(
+                key['name'], key['data']['generator'],key['data']['mass'],key['data']['length'],key['data']['shoulder'],key['data']['shoulderDiameter']
+            ))
             pass
         elif typ == 'trapFins':
             pass
@@ -134,9 +137,9 @@ class nosecone(component):
             "data":{
                 "mass":self.mass,
                 "length":self.length,
-                "diameter":self.diameter,
                 "generator":self.generator,
-                "shoulder":self.shoulder
+                "shoulder":self.shoulder,
+                "shoulderDiameter":self.shoulderdiameter
             }
         }
 class trapfins(component):

@@ -10,26 +10,27 @@ import partdialogs
 import json #for reading the GUI config json
 with open("../cfg/theme.json") as f: #themeing file for the gui
     cfg = json.load(f)
-# rock = rocket.Rocket('test/test.json',
-#                      [
-#                         rocket.fileParent('Rocket'),
-#                         rocket.tube('alex',24.3,62.3,57.3,0.2),
-#                         rocket.tube('jon',32,56,89,0.2),
-#                         rocket.tube('a',43,56,9,0.2),
-#                             rocket.tube('b',34,25,8.,0.2,'a'),
-#                             rocket.tube('c',23,10,7,0.2,'a'), #the part in {} is a set, the rest is tuple
-#                         rocket.motor('m',40,24,56,40,{})
-#                      ]
-#                      )
-# rock.SaveJson('test.json')
-rock = rocket.loadJsontoObject('test.json')
+rock = rocket.Rocket('test/test.json',
+                     [
+                        rocket.fileParent('Rocket'),
+                        rocket.tube('alex',24.3,62.3,57.3,0.2),
+                        rocket.tube('jon',32,56,89,0.2),
+                        rocket.tube('a',43,56,9,0.2),
+                            rocket.tube('b',34,25,8.,0.2,'a'),
+                            rocket.tube('c',23,10,7,0.2,'a'), #the part in {} is a set, the rest is tuple
+                        rocket.motor('m',40,24,56,40,{}),
+                        rocket.nosecone('nose',0,24,16,True,10)
+                     ]
+                     )
+rock.SaveJson('test.json')
+#rock = rocket.loadJsontoObject('test.json')
 #print(rock.parts)
 # creating main tkinter window/toplevel 
 root = Tk() #main window root
 root.title('LibreRocket V0')
 #root.iconbitmap('../img/icon.ico') #TODO make icon
+eh.initsavefile(rock)
 partdialogs.initdialogs(root)
-
 partdialogs.inittree(rock.parts)
 root.configure(bg=cfg['backgroundColor']) #loads color options from cfg json
 menubar = Menu(root) #top-of-window menubar
@@ -37,7 +38,9 @@ file = Menu(menubar,tearoff=0)
 file.add_command(label="New")
 file.add_command(label="Open",command=eh.getFilename)  
 file.add_command(label="Save")  
-file.add_command(label="Save as...")  
+#file.add_command(label="Save as...",command=lambda rocket: eh.saveAs(rocket))
+#file.add_command(label="Save as...",command=eh.saveAs(rock))  
+file.add_command(label="Save as...",command=eh.saveAs)
 file.add_command(label="Close",command=eh.exitApp)
 menubar.add_cascade(label='File',menu=file) 
 root.config(menu=menubar) 
