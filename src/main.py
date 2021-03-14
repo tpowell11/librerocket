@@ -10,31 +10,20 @@ import partdialogs
 import json #for reading the GUI config json
 with open("../cfg/theme.json") as f: #themeing file for the gui
     cfg = json.load(f)
-
 # rock = rocket.Rocket('test/test.json',
 #                      [
 #                         rocket.fileParent('Rocket'),
 #                         rocket.tube('alex',24.3,62.3,57.3,0.2),
 #                         rocket.tube('jon',32,56,89,0.2),
-#                         [rocket.tube('a',43,56,9,0.2),
-#                             rocket.tube('b',34,25,8.,0.2),
-#                             rocket.tube('c',23,10,7,0.2)], #the part in {} is a set, the rest is tuple
+#                         rocket.tube('a',43,56,9,0.2),
+#                             rocket.tube('b',34,25,8.,0.2,'a'),
+#                             rocket.tube('c',23,10,7,0.2,'a'), #the part in {} is a set, the rest is tuple
 #                         rocket.motor('m',40,24,56,40,{})
 #                      ]
 #                      )
-rock = rocket.Rocket('test/test.json',
-                     [
-                        rocket.fileParent('Rocket'),
-                        rocket.tube('alex',24.3,62.3,57.3,0.2),
-                        rocket.tube('jon',32,56,89,0.2),
-                        rocket.tube('a',43,56,9,0.2),
-                            rocket.tube('b',34,25,8.,0.2,'a'),
-                            rocket.tube('c',23,10,7,0.2,'a'), #the part in {} is a set, the rest is tuple
-                        rocket.motor('m',40,24,56,40,{})
-                     ]
-                     )
-rock.SaveJson('test.json')
-rocket.loadJsontoObject('test.json')
+# rock.SaveJson('test.json')
+rock = rocket.loadJsontoObject('test.json')
+#print(rock.parts)
 # creating main tkinter window/toplevel 
 root = Tk() #main window root
 root.title('LibreRocket V0')
@@ -114,10 +103,13 @@ treeview.grid(row = 0, column = 0) #grid the view to root
 def maketreeviewTEMP():
     for item in rock.parts:
         if type(item) == rocket.fileParent:
+            print('found main')
             treeview.insert('','end',item.name,text = item.name)
         elif item.parent != '':
+            print('found unparented object')
             treeview.insert(item.parent,'end',item.name,text = item.name)
         else:
+            print('found parented object')
             treeview.insert(rock.parts[0].name,'end',item.name,text = item.name)
 maketreeviewTEMP()
 
