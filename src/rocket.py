@@ -1,48 +1,32 @@
 #classes for LibreRocket
-# all classes which store components have a getData method which returns a json string
+# all classes which store components have a getData method which returns a dict, which is then saved to a file by Rocket.SaveJson(self, path)
 import json
-usedIds = [] #stores all used hexadecimal ids
 class Rocket(object):
     "the main class for rocket files, has the method to actually save the file"
     parts: list #stores the list of the rocket's components
     def __init__(self,Filename,Parts=[]):
         self.parts=Parts
         self.filename = Filename
-    # def SaveJson(self,path: str):
-    #     "dumps json of the file, then saves to the specified path"
-    #     j = ''
-    #     for item in self.parts:
-    #         if type(item) == list:
-    #             for ite in item:
-    #                 j += ite.getData()
-    #             del item
-    #     data = {
-    #         "filename":self.filename,
-    #         "parts":j + str(self.parts.getData())
-    #     }
-    #     with open(str(path),'w+') as f:
-    #         f.write(json.dumps(data))
-    #         f.close()
     def SaveJson(self, path:str):
         data={
             "filename":self.filename,
             "parts":[]
         }
         for item in self.parts:
-            data['parts'].append(item.getData())
+            data['parts'].append(item.getData()) #add each component to json parts list
         print(data)
         with open(str(path),'w+') as f:
             f.write(json.dumps(data,indent=4))
+            f.close()
             
 class fileParent(object):
     "The top level class for the file"
     def __init__(self,Name: str):
         self.name = Name
     def getData(self) -> str:
-        data = {
+        return {
             'name':self.name
         }
-        return json.dumps(data)
 class stage(object):
     "class for rocket stages"
     def __init__(self, Name: str):
@@ -55,12 +39,12 @@ class component(object):
     length: float
     position: float
     material: str #refers to a material in materials.json
-    parent = '' #contains the parent for a component
+    parent = '' #contains the parent for a component, used in rendering treeview 
 class motor(component):
     objtype='motor'
     "Fields for motors"
     def __init__(self,Name: str, Itot: float, Diameter: float, Mass: float, Length: float, Curve: dict, Parent = ''):
-        #Moves data into the correct areas
+        "Moves data into the correct areas"
         self.name = Name
         self.parent = Parent
         self.Itot = Itot
@@ -69,7 +53,7 @@ class motor(component):
         self.length = Length
         self.curve = Curve
     def getData(self):
-        data = {
+        return {
             "name":self.name,
             "parent":self.parent,
             "type":'motor',
@@ -81,8 +65,8 @@ class motor(component):
                 "Itot":self.Itot,
             }
         }
-        return data
 class tube(component):
+    "fields for any tube component in a rocket"
     objtype='tube'
     def __init__(self,Name: str, Mass: float, Length: float, Diameter: float, WallTh: float, Parent = ''):
         self.name = Name
@@ -92,7 +76,7 @@ class tube(component):
         self.length = Length
         self.WallTh = WallTh
     def getData(self):
-        data = {
+        return {
             "name":self.name,
             "parent":self.parent,
             "type":'tube',
@@ -103,8 +87,6 @@ class tube(component):
                 "WallTh":self.WallTh
             }
         }
-        #return json.dumps(self.__dict__)
-        return data
 class nosecone(component):
     def __init__(self, Name: str, Generator: int, Mass: float, Length: float, Shoulder: bool, ShoulderDiameter: float):
         self.name = Name
