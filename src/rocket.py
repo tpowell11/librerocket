@@ -65,6 +65,10 @@ class stage(object):
     "class for rocket stages"
     def __init__(self, Name: str):
         self.name = Name
+    def getData(self)->dict:
+        return {
+            "name":self.name
+        }
 class component(object):
     "Basic fields for all components"
     name: str
@@ -74,10 +78,15 @@ class component(object):
     position: float
     material: str #refers to a material in materials.json
     parent = '' #contains the parent for a component, used in rendering treeview 
+    def getDensity(self,matname:str)->float:
+        "gets the density of a material from the material db"
+        with open('../db/materials.json','r') as f:
+            db = json.load(f)
+            return db['struct'][matname]['density'] #look up the density in the db 
 class motor(component):
     objtype=__name__
     "Fields for motors"
-    def __init__(self,Name: str, Itot: float, Diameter: float, Mass: float, Length: float, Curve: dict, Parent = ''):
+    def __init__(self,Name: str, Itot: float, Diameter: float, Mass: float, Length: float, Curve: dict, Parent = '', Position = 0.0):
         "Moves data into the correct areas"
         self.name = Name
         self.parent = Parent
@@ -86,7 +95,8 @@ class motor(component):
         self.mass = Mass
         self.length = Length
         self.curve = Curve
-    def getData(self):
+        self.position = Position
+    def getData(self)->dict:
         return {
             "name":self.name,
             "parent":self.parent,
@@ -102,14 +112,15 @@ class motor(component):
         }
 class tube(component):
     "fields for any tube component in a rocket"
-    def __init__(self,Name: str, Mass: float, Length: float, Diameter: float, WallTh: float, Parent = ''):
+    def __init__(self,Name: str, Mass: float, Length: float, Diameter: float, WallTh: float, Parent = '', isMotorHolder=False):
         self.name = Name
         self.parent = Parent
         self.mass = Mass
         self.diameter = Diameter
         self.length = Length
         self.WallTh = WallTh
-    def getData(self):
+        self.isMotorHolder = isMotorHolder
+    def getData(self)->dict:
         return {
             "name":self.name,
             "type":type(self).__name__,
@@ -118,7 +129,8 @@ class tube(component):
                 "mass":self.mass,
                 "length":self.length,
                 "diameter":self.diameter,
-                "wallth":self.WallTh
+                "wallth":self.WallTh,
+                "isMotorHolder":self.isMotorHolder
             }
         }
 class nosecone(component):
@@ -129,7 +141,7 @@ class nosecone(component):
         self.length = Length
         self.shoulder = Shoulder
         self.shoulderdiameter = ShoulderDiameter
-    def getData(self):
+    def getData(self)->dict:
         return {
             "name":self.name,
             "type":type(self).__name__,
@@ -144,6 +156,45 @@ class nosecone(component):
         }
 class trapfins(component):
     "automatc trapesoidal fins"
+    def __init__(self, Name: str,FinCount: int, FinTop:float, FinOuter:float, FinHeight: float,Parent = '', FinBottom = 0 , IsTabbed=False, TabDst = 0, TabLength = 0, TabHeight = 0):
+        self.name=Name
+        self.finTop=FinTop
+        self.finOuter=FinOuter
+        self.finHeight=FinHeight
+        self.finBottom=FinBottom
+        self.parent=Parent
+        self.finCount = FinCount
+        if IsTabbed != False:
+            self.isTabbed=IsTabbed
+            self.tabDst=TabDst
+            self.tabLength=TabLength
+            self.tabHeight=TabHeight
+        else:
+            self.isTabbed = False
+    def getArea(self)->float:
+        "returns the area of the fin component"
+        return self.finHeight((.5*self.finTop)+(.5*self.finBottom)+self.finOuter)
+    def getData(self)->dict:
+        base = {
+            "name":self.name,
+                "type":type(self).__name__,
+                "parent":self.parent,
+                "data":{
+                    "finCount":self.finCount,
+                    "finTop":self.finTop,
+                    "finOuter":self.finOuter,
+                    "finHeight":self.finHeight,
+                    "finBottom":self.finBottom,
+                    "isTabbed":self.isTabbed
+                }
+            }
+        if self.isTabbed == True:
+            base['data']['tabDst'] = self.tabDst
+            base['data']['tabLength'] = self.tabLength
+            base['data']['tabHeight'] = self.tabHeight
+            return base #retrun modified dict
+        else:
+            return base #retrun unmodified dict
 class ellipfins(component):
     "automatic ellptical fins"
 class freefins(component):
@@ -151,3 +202,21 @@ class freefins(component):
         self.name = Name
         self.points = Points
     "freeform fins"
+class massComponent(component):
+    def __init__(self, Mass: float, Diameter:float ,Positon:float, Parent = ''):
+        self.mass = Mass
+        self.diameter = Diameter
+        self.parent = Parent
+        self.position = Positon
+    def getData(self)->dict:
+        return {
+            "name":self.name,
+            "type":type(self).__name__,
+            "parent":self.parent,
+            "data":{
+                "mass":self.mass,
+                "length":self.length,
+                "diameter":self.diameter,
+                "position":self.position
+            }
+        }

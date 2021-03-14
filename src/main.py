@@ -53,6 +53,7 @@ menubar.add_cascade(label='File',menu=file)
 tools = Menu(menubar,tearoff=0)
 tools.add_command(label='Settings') #launch settings dialog
 tools.add_command(label='User Presets') #launch user presets management dialog
+menubar.add_cascade(label='Tools',menu=tools)
 root.config(menu=menubar) 
 tabControl = ttk.Notebook(root) #tabbed layout for multiple tasks
 designTab = ttk.Frame(tabControl) #the rocket design tab
