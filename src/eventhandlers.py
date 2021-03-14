@@ -3,6 +3,10 @@ from tkinter import ttk
 from tkinter import filedialog
 import rocket as rk
 Rock = ""
+class savepath(object):
+    def __init__(self,rocket):
+        self.rock = rocket        
+
 def initsavefile(rocket: rk.Rocket):
     Rocket = rocket
 def exitApp():

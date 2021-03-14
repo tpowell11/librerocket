@@ -8,6 +8,13 @@ import rocket
 import eventhandlers as eh #all gui event functions
 import partdialogs
 import json #for reading the GUI config json
+class labelledEntry(Tk):
+    def __init__(self,root,label:str):
+        self.container = ttk.Frame(root)
+        self.label = ttk.Label(self.container,text=label)
+        self.entry = ttk.Entry(self.container)
+        self.label.grid(row=0, column=0)
+        self.entry.grid(row=0, column=1)
 with open("../cfg/theme.json") as f: #themeing file for the gui
     cfg = json.load(f)
 rock = rocket.Rocket('test/test.json',
@@ -40,9 +47,12 @@ file.add_command(label="Open",command=eh.getFilename)
 file.add_command(label="Save")  
 #file.add_command(label="Save as...",command=lambda rocket: eh.saveAs(rocket))
 #file.add_command(label="Save as...",command=eh.saveAs(rock))  
-file.add_command(label="Save as...",command=eh.saveAs)
+file.add_command(label="Save as...")
 file.add_command(label="Close",command=eh.exitApp)
 menubar.add_cascade(label='File',menu=file) 
+tools = Menu(menubar,tearoff=0)
+tools.add_command(label='Settings') #launch settings dialog
+tools.add_command(label='User Presets') #launch user presets management dialog
 root.config(menu=menubar) 
 tabControl = ttk.Notebook(root) #tabbed layout for multiple tasks
 designTab = ttk.Frame(tabControl) #the rocket design tab
