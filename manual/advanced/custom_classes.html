@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="../base.css">
+    <title>Writing Custom Classes</title>
+</head>
+<body>
+    <h1>Writing Custom Classes</h1>
+    <p>All of the classed for the program are stored in the file <code>../src/rocket.py</code>. For any class there are a few basic functions that it must have.
+    Foremost among these is <code>getData(self)->dict</code>. This method returns a dict that should contain all of the parameters required to reconstruct
+    the component when it is read in from a file. This method is important because it is called on all elements of the loaded flle when it is saved.</p>
+    <h3>Example:</h3>
+    <div class='ml'>
+        def getData(self)->dict: <br>
+        return { <br>
+            &emsp;"name":self.name, <br>
+            &emsp;"type":type(self).__name__, <br>
+            &emsp;"parent":self.parent, <br>
+            &emsp;"data":{ <br>
+                &emsp;&emsp;"mass":self.mass, <br>
+                &emsp;&emsp;"length":self.length, <br>
+                &emsp;&emsp;"diameter":self.diameter, <br>
+                &emsp;&emsp;"wallth":self.WallTh, <br>
+                &emsp;&emsp;"isMotorHolder":self.isMotorHolder <br>
+            &emsp;} <br>
+        } <br>
+    </div>
+    <p>This example comes from the <code>tube</code> class. In the retruned dict, there should be 4 fields: <code>name,type,parent</code>,and<code>data</code>. <code>name</code> is used to store the name of the component, and is used
+    in the treeview for rendering. <code>type</code> is an automatically generated field required for the component to be properly written to a file. <code>parent</code> stores the
+    component's parent. This is used in a number of things.The key <code>data</code> can store any desired data so long as it is in key-value pairs. This is where all component 
+    data is stored. While these keys do not need to be in this order, it is recommended that they are kept in this order for consistency. The return type must be <code>dict</code>.</p>
+</body>

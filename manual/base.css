@@ -1,8 +1,11 @@
 :root{
     --backgroundColor: #3d3d3d;
     --textColor: #FFFFFF;
+    --codeBackgroundColor: #3d455d;
+    --codeBorderColor: #6475c2;
 }
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap'); /*google fonts for Open Sans*/
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap'); /*google fonts for Roboto Mono*/
 *{
     font-family: 'Open Sans', sans-serif;
     background-color:var(--backgroundColor);
@@ -34,4 +37,20 @@
 }
 .subcontent{
     margin-left: 7%;
+}
+.ml{
+    /*background-color: aquamarine;*/
+    font-family: 'Roboto Mono',monospace;
+    margin-right: 80em;
+    border-style: none none none solid;
+    border-color: var(--codeBorderColor);
+    background-color:var(--codeBackgroundColor);
+    padding: 1em;
+}
+code{
+    font-family: 'Roboto Mono',monospace;
+    padding-left: .1em;
+    padding-right: .1em;
+    border-radius: .2em;
+    background-color: var(--codeBorderColor);
 }
