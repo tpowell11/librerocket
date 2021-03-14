@@ -1,6 +1,10 @@
 #classes for LibreRocket
 # all classes which store components have a getData method which returns a dict, which is then saved to a file by Rocket.SaveJson(self, path)
 import json
+import math
+#
+# main class
+#
 class Rocket(object):
     "the main class for rocket files, has the method to actually save the file"
     parts: list #stores the list of the rocket's components
@@ -45,13 +49,26 @@ def loadJsontoObject(filename:str) -> Rocket:
                 key['name'], key['data']['generator'],key['data']['mass'],key['data']['length'],key['data']['shoulder'],key['data']['shoulderDiameter']
             ))
             pass
-        elif typ == 'trapFins':
-            pass
+        elif typ == 'trapfins':
+            if key['data']['isTabbed'] == False:
+                parts.append(trapfins(
+                    key['name'],key['data']['finCount'],key['data']['finTop'],key['data']['finOuter'],
+                    key['data']['finHeight'],key['data']['finBottom'],Parent = key['parent']
+                ))
+            else:
+                parts.append(trapfins(
+                    key['name'],key['data']['finCount'],key['data']['finTop'],key['data']['finOuter'],
+                    key['data']['finHeight'],key['data']['finBottom'],Parent = key['parent'],
+                    TabDst=key['data']['tabDst'],TabLength=['data']['tabLength'],TabHeight=key['data']['tabHeight']
+                ))
         elif typ == 'ellipFins':
             pass
         elif typ == 'freeFins':
             pass
     return Rocket(filename,parts)
+#
+# File only classes
+#
 class fileParent(object):
     "The top level class for the file"
     def __init__(self,Name: str):
@@ -69,6 +86,9 @@ class stage(object):
         return {
             "name":self.name
         }
+#
+# Classes that represent components
+#
 class component(object):
     "Basic fields for all components"
     name: str
@@ -78,11 +98,16 @@ class component(object):
     position: float
     material: str #refers to a material in materials.json
     parent = '' #contains the parent for a component, used in rendering treeview 
-    def getDensity(self,matname:str)->float:
+    def getDensity(self)->float:
         "gets the density of a material from the material db"
         with open('../db/materials.json','r') as f:
             db = json.load(f)
-            return db['struct'][matname]['density'] #look up the density in the db 
+            return db['struct'][self.material]['density'] #look up the density in the db
+    def getMass(self)->float:
+        "returns the component's mass"
+        return self.mass
+    def getVolume(self)->None:
+        pass
 class motor(component):
     objtype=__name__
     "Fields for motors"
@@ -133,6 +158,15 @@ class tube(component):
                 "isMotorHolder":self.isMotorHolder
             }
         }
+    def getSurfaceArea(self)->float:
+        "returns the surface area of the tube"
+        return 2*math.pi*(self.diameter/2)*(self.length+self.diameter/2)
+    def getVolume(self)->float:
+        "returns the volume of the component"
+        return (math.pi*(self.diameter/2)**2)*self.length
+    def getMass(self)->float:
+        "returns the mass of the component"
+        return self.getDensity()*self.getVolume()
 class nosecone(component):
     def __init__(self, Name: str, Generator: int, Mass: float, Length: float, Shoulder: bool, ShoulderDiameter: float):
         self.name = Name
@@ -156,8 +190,9 @@ class nosecone(component):
         }
 class trapfins(component):
     "automatc trapesoidal fins"
-    def __init__(self, Name: str,FinCount: int, FinTop:float, FinOuter:float, FinHeight: float,Parent = '', FinBottom = 0 , IsTabbed=False, TabDst = 0, TabLength = 0, TabHeight = 0):
+    def __init__(self, Name: str,Thickness, FinCount: int, FinTop:float, FinOuter:float, FinHeight: float,FinBottom:float, Parent = '', IsTabbed=False, TabDst = 0, TabLength = 0, TabHeight = 0):
         self.name=Name
+        self.thickness = Thickness
         self.finTop=FinTop
         self.finOuter=FinOuter
         self.finHeight=FinHeight
@@ -173,7 +208,16 @@ class trapfins(component):
             self.isTabbed = False
     def getArea(self)->float:
         "returns the area of the fin component"
-        return self.finHeight((.5*self.finTop)+(.5*self.finBottom)+self.finOuter)
+        if self.isTabbed == False:
+            return self.finHeight((.5*self.finTop)+(.5*self.finBottom)+self.finOuter)
+        else:
+            return self.finHeight((.5*self.finTop)+(.5*self.finBottom)+self.finOuter)+(self.tabHeight*self.tabLength)
+    def getVolume(self)->float:
+        "returns the component's volume"
+        return self.getArea()*self.thickness
+    def getMass(self)->float:
+        "returns the component's mass"
+        return self.getVolume()*self.getDensity()
     def getData(self)->dict:
         base = {
             "name":self.name,
@@ -195,6 +239,7 @@ class trapfins(component):
             return base #retrun modified dict
         else:
             return base #retrun unmodified dict
+
 class ellipfins(component):
     "automatic ellptical fins"
 class freefins(component):
@@ -208,6 +253,7 @@ class massComponent(component):
         self.diameter = Diameter
         self.parent = Parent
         self.position = Positon
+
     def getData(self)->dict:
         return {
             "name":self.name,
