@@ -33,7 +33,7 @@ rock = rocket.Rocket('test/test.json',
                         rocket.motor('m',40,24,56,40,{})
                      ]
                      )
-#rock.SaveJson('test.json')
+rock.SaveJson('test.json')
 
 # creating main tkinter window/toplevel 
 root = Tk() #main window root

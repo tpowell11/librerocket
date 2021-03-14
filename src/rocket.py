@@ -1,5 +1,5 @@
 #classes for LibreRocket
-# all classes which store components have a getJson method which returns a json string
+# all classes which store components have a getData method which returns a json string
 import json
 usedIds = [] #stores all used hexadecimal ids
 class Rocket(object):
@@ -8,27 +8,37 @@ class Rocket(object):
     def __init__(self,Filename,Parts=[]):
         self.parts=Parts
         self.filename = Filename
-    def SaveJson(self,path: str):
-        "dumps json of the file, then saves to the specified path"
-        j = ''
-        for item in self.parts:
-            if type(item) == list:
-                for ite in item:
-                    j += ite.getJson()
-                del item
-        data = {
+    # def SaveJson(self,path: str):
+    #     "dumps json of the file, then saves to the specified path"
+    #     j = ''
+    #     for item in self.parts:
+    #         if type(item) == list:
+    #             for ite in item:
+    #                 j += ite.getData()
+    #             del item
+    #     data = {
+    #         "filename":self.filename,
+    #         "parts":j + str(self.parts.getData())
+    #     }
+    #     with open(str(path),'w+') as f:
+    #         f.write(json.dumps(data))
+    #         f.close()
+    def SaveJson(self, path:str):
+        data={
             "filename":self.filename,
-            "parts":j + str(self.parts.getJson())
+            "parts":[]
         }
+        for item in self.parts:
+            data['parts'].append(item.getData())
+        print(data)
         with open(str(path),'w+') as f:
-            f.write(json.dumps(data))
-            f.close()
+            f.write(json.dumps(data,indent=4))
             
 class fileParent(object):
     "The top level class for the file"
     def __init__(self,Name: str):
         self.name = Name
-    def getJson(self) -> str:
+    def getData(self) -> str:
         data = {
             'name':self.name
         }
@@ -58,7 +68,7 @@ class motor(component):
         self.mass = Mass
         self.length = Length
         self.curve = Curve
-    def getJson(self):
+    def getData(self):
         data = {
             "name":self.name,
             "parent":self.parent,
@@ -71,7 +81,7 @@ class motor(component):
                 "Itot":self.Itot,
             }
         }
-        return json.dumps(data)
+        return data
 class tube(component):
     objtype='tube'
     def __init__(self,Name: str, Mass: float, Length: float, Diameter: float, WallTh: float, Parent = ''):
@@ -81,7 +91,7 @@ class tube(component):
         self.diameter = Diameter
         self.length = Length
         self.WallTh = WallTh
-    def getJson(self):
+    def getData(self):
         data = {
             "name":self.name,
             "parent":self.parent,
@@ -93,7 +103,8 @@ class tube(component):
                 "WallTh":self.WallTh
             }
         }
-        return json.dumps(data)
+        #return json.dumps(self.__dict__)
+        return data
 class nosecone(component):
     def __init__(self, Name: str, Generator: int, Mass: float, Length: float, Shoulder: bool, ShoulderDiameter: float):
         self.name = Name
