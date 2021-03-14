@@ -34,7 +34,7 @@ rock = rocket.Rocket('test/test.json',
                      ]
                      )
 rock.SaveJson('test.json')
-
+rocket.loadJsontoObject('test.json')
 # creating main tkinter window/toplevel 
 root = Tk() #main window root
 root.title('LibreRocket V0')

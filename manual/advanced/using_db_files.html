@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="../base.css">
+    <title>Using the files in /db/</title>
+</head>
+<body>
+    <h2>What is /db/?</h2>
+    <p>/db/ refers to the folder in which all of the program's non-code and non-asset data is stored. This leaves the file <code>theme.json</code>, and the several material and motor files. This is also the place where any downloaded or user-created presets will be stored, unless the user preset path is changed in <code>/cfg/settings.json</code>.</p>
+    <h2>Materials.json</h2>
+    <p>This file stores all of the materials known to the program. It also stores the properties of those materials. In this file there are three sections:
+        <ul>
+            <li><code>struct</code>, which stores structural materials</li>
+            <li><code>line</code>, which stores materials used in shock cords</li>
+            <li><code>chute</code>, which stores parachute materials</li>
+        </ul>
+    </p>
+    <h3>Struct</h3>
+    <p>The entries in this section take the form:</p>
+    <blockquote>
+        <code>
+            "material_name" : { <br>
+            &emsp;  "density": density_in_kg/m3 <br>
+            },
+        </code>
+    </blockquote>
+</body>
