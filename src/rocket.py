@@ -20,10 +20,35 @@ class Rocket(object):
             f.close()
 def loadJsontoObject(filename:str) -> Rocket:
     "loads a json file and returns the proper objects"
-    with open(filename,"r") as f: #open file
-        data = json.load(f) #read file
-        for key in data['parts']:
-            print(key['type'])
+    parts = []
+    f = open(filename,"r") #open file
+    print('test')
+    data = json.load(f) #read file
+    for key in data['parts']:
+        typ = key['type']
+        #print(typ)
+        if typ == 'fileParent':
+            parts.append(fileParent(key['name']))
+        elif typ == 'motor':
+            parts.append(motor(key['name'],key['data']['Itot'],key['data']['diameter'],
+                                key['data']['mass'],key['data']['length'],key['data']['curve'],
+                                key['parent']
+                                ))
+            print('found motor')
+        elif typ == 'tube':
+            parts.append(tube(
+                key['name'],key['data']['mass'],key['data']['length'],key['data']['diameter'],key['data']['wallth'],key['parent']
+            ))
+            print('found tube')
+        elif typ == 'nosecone':
+            pass
+        elif typ == 'trapFins':
+            pass
+        elif typ == 'ellipFins':
+            pass
+        elif typ == 'freeFins':
+            pass
+    return Rocket(filename,parts)
 class fileParent(object):
     "The top level class for the file"
     def __init__(self,Name: str):
@@ -31,7 +56,7 @@ class fileParent(object):
     def getData(self) -> str:
         return {
             'name':self.name,
-            'type':__name__
+            'type':type(self).__name__
         }
 class stage(object):
     "class for rocket stages"
@@ -49,12 +74,11 @@ class component(object):
 class motor(component):
     objtype=__name__
     "Fields for motors"
-    def __init__(self,Name: str, Itot: float, Diameter: float, Mass: float, Length: float, Curve: dict,Material: str, Parent = ''):
+    def __init__(self,Name: str, Itot: float, Diameter: float, Mass: float, Length: float, Curve: dict, Parent = ''):
         "Moves data into the correct areas"
         self.name = Name
         self.parent = Parent
         self.Itot = Itot
-        self.material = Material
         self.diameter = Diameter
         self.mass = Mass
         self.length = Length
@@ -63,19 +87,18 @@ class motor(component):
         return {
             "name":self.name,
             "parent":self.parent,
-            "type":__name__,
+            "type":type(self).__name__,
             "data":{
                 "mass":self.mass,
                 "length":self.length,
                 "diameter":self.diameter,
                 "length":self.length,
-                "material":self.material,
                 "Itot":self.Itot,
+                "curve":self.curve
             }
         }
 class tube(component):
     "fields for any tube component in a rocket"
-    objtype='tube'
     def __init__(self,Name: str, Mass: float, Length: float, Diameter: float, WallTh: float, Parent = ''):
         self.name = Name
         self.parent = Parent
@@ -86,13 +109,13 @@ class tube(component):
     def getData(self):
         return {
             "name":self.name,
-            "type":__name__,
+            "type":type(self).__name__,
             "parent":self.parent,
             "data":{
                 "mass":self.mass,
                 "length":self.length,
                 "diameter":self.diameter,
-                "WallTh":self.WallTh
+                "wallth":self.WallTh
             }
         }
 class nosecone(component):
@@ -106,7 +129,7 @@ class nosecone(component):
     def getData(self):
         return {
             "name":self.name,
-            "type":__name__,
+            "type":type(self).__name__,
             "parent":self.parent,
             "data":{
                 "mass":self.mass,
