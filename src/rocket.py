@@ -22,6 +22,11 @@ class Rocket(object):
         with open(str(path),'w+') as f:
             f.write(json.dumps(data,indent=4))
             f.close()
+    def getCenterOfMass(self)->float:
+        "returns position of the center of mass"
+        points =  [] # [mass,position]
+        for item in self.parts:
+            points.append([item.getMass(),item.position])
 def loadJsontoObject(filename:str) -> Rocket:
     "loads a json file and returns the proper objects"
     parts = []
@@ -59,7 +64,7 @@ def loadJsontoObject(filename:str) -> Rocket:
                 parts.append(trapfins(
                     key['name'],key['data']['finCount'],key['data']['finTop'],key['data']['finOuter'],
                     key['data']['finHeight'],key['data']['finBottom'],Parent = key['parent'],
-                    TabDst=key['data']['tabDst'],TabLength=['data']['tabLength'],TabHeight=key['data']['tabHeight']
+                    TabDst=key['data']['tabDst'],TabLength=key['data']['tabLength'],TabHeight=key['data']['tabHeight']
                 ))
         elif typ == 'ellipFins':
             pass
@@ -84,7 +89,8 @@ class stage(object):
         self.name = Name
     def getData(self)->dict:
         return {
-            "name":self.name
+            "name":self.name,
+            "type":type(self).__name__
         }
 #
 # Classes that represent components
@@ -145,6 +151,18 @@ class tube(component):
         self.length = Length
         self.WallTh = WallTh
         self.isMotorHolder = isMotorHolder
+    def getSurfaceArea(self)->float:
+        "returns the surface area of the tube"
+        return 2*math.pi*(self.diameter/2)*(self.length+self.diameter/2)
+    def getVolume(self)->float:
+        "returns the volume of the component"
+        return (math.pi*(self.diameter/2)**2)*self.length
+    def getMass(self)->float:
+        "returns the mass of the component"
+        return self.getDensity()*self.getVolume()
+    def getFrontalSurfaceArea(self)->float:
+        "returns the component's frontal surface area"
+        return math.pi*(self.diameter/2)**2
     def getData(self)->dict:
         return {
             "name":self.name,
@@ -158,15 +176,7 @@ class tube(component):
                 "isMotorHolder":self.isMotorHolder
             }
         }
-    def getSurfaceArea(self)->float:
-        "returns the surface area of the tube"
-        return 2*math.pi*(self.diameter/2)*(self.length+self.diameter/2)
-    def getVolume(self)->float:
-        "returns the volume of the component"
-        return (math.pi*(self.diameter/2)**2)*self.length
-    def getMass(self)->float:
-        "returns the mass of the component"
-        return self.getDensity()*self.getVolume()
+
 class nosecone(component):
     def __init__(self, Name: str, Generator: int, Mass: float, Length: float, Shoulder: bool, ShoulderDiameter: float):
         self.name = Name
@@ -175,6 +185,9 @@ class nosecone(component):
         self.length = Length
         self.shoulder = Shoulder
         self.shoulderdiameter = ShoulderDiameter
+    def getFrontalSurfaceArea(self)->float:
+        "returns the component's frontal surface area"
+        return math.pi*(self.diameter/2)**2
     def getData(self)->dict:
         return {
             "name":self.name,
@@ -190,7 +203,8 @@ class nosecone(component):
         }
 class trapfins(component):
     "automatc trapesoidal fins"
-    def __init__(self, Name: str,Thickness, FinCount: int, FinTop:float, FinOuter:float, FinHeight: float,FinBottom:float, Parent = '', IsTabbed=False, TabDst = 0, TabLength = 0, TabHeight = 0):
+    def __init__(self, Name: str,Thickness, FinCount: int, FinTop:float, FinOuter:float, FinHeight: float,FinBottom:float, Parent = '',
+                 IsTabbed=False, TabDst = 0, TabLength = 0, TabHeight = 0):
         self.name=Name
         self.thickness = Thickness
         self.finTop=FinTop
