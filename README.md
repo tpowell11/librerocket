@@ -1,4 +1,10 @@
 # LibreRocket
+## Features (mostly NYI a/o Mar 18 2021)
+ - Both analytic and computed models
+ - Simulation calibration based on actual flights
+ - [ThrustCurve.org](https://www.thrustcurve.org) integration
+ - [OpenWeather](https://openweathermap.org/api) integration for on-site predictions
+ - [FreeCAD](https://github.com/FreeCAD/FreeCAD) Plugin to import files for manufacturing
 ## Installation
 ### Prerequisites 
  - Python 3.9
