@@ -10,6 +10,7 @@
  - Python 3.9
  - Python default modules
  - [Tkinter](#Tkinter)
+ - [lxml](#lxml)
 ### Tkinter
 Tkinter is a common GUI module for python projects, and is usually included with the packages that are installed when python is. Many OS's and Linux distrobutions have the binaries for the library preinstalled, but if
 ~~~python
@@ -35,3 +36,6 @@ rpm -ivh tkinter-2.7-90el7.x86_64.rpm
 ~~~
 <sup>Note: I am not framiliar with RPM so this could be out of date/incorrect</sup>
 
+### lxml
+lxml is only used to help parse OpenRocket .ork files, if this feature is excluded, lxml is not needed.
+[lxml](https://lxml.de)
