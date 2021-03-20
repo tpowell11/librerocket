@@ -1,50 +1,70 @@
-from lxml import etree
+import lxml
+import json
 import zipfile
-import pprint
-def getlistfromork(filepath:str)->list:
-    pp=pprint.PrettyPrinter(indent=4)
-    zf = zipfile.ZipFile(filepath,mode='r') #declare the actual file binary
-    f = zf.open('rocket.ork') #open the internal file from the zip
-    m=[]
-    has_attributes = ['innertube','bulkhead','tubecoupler','masscomponent','nosecone','parachute','bodytube',
-    'shockcord','freeformfinset','centeringring','motormount']
-    #these lists define where specific elements are processed
-    is_value_string=['finish','shape','masscomponenttype','designation','cd','deployevent','deployaltitude']
-    is_value_float=['length','thickness','aftradius','aftshoulderlength','aftshoulderthickness','mass',
-                    'packedlength','packedradius','radialposition','radialdirection','radius','outerradius',
-                    'diameter','delay','linelength','linecount','deploydelay','fincount','rotation','cant','tabheight'
-                    'tablength','filletradius']
-    is_value_bool=['aftshouldercapped']
-    is_material=['material','linematerial','filletmaterial']
-    root=etree.parse(f)
-
-    for element in root.iter('*'): #get all of the tags in the document
-        if element.tag in has_attributes:
-            m.append([element.tag]) #append the part's name to the list
-        #general processing for elements whose data is stored in element text
+from io import bytes, TextIOWrapper
+class orkFile(object):
+    """contains and manipulates OpenRocket (<=15.03) files
+    """
+    def openfile(filepath: str)->bytes or TextIOWrapper:
+        "gets the IO object for a given file, should not be called outside of this class"
         try:
-            if element.tag in is_value_float:
-                m[-1].append([element.tag,float(element.text)])
-            if element.tag in is_value_string: #make the element's payload a float
-                m[-1].append([element.tag,str(element.text)])
-            if element.tag in is_value_bool: #make the element's payload a bool
-                m[-1].append([element.tag,bool(element.text)])
-        except ValueError:
-            m[-1].append([element.tag,element.text])
-        #special processing for elements that use XML attibutes or do not work with the above
-        if element.tag == 'preset':
-            m[-1].append([element.tag,element.get('manufacturer'),element.get('partno'),element.get('digest')])
-        if element.tag == 'position':
-            m[-1].append([element.tag,float(element.text),element.get('type')])
-        if element.tag == 'motor':
-            m[-1].append([element.tag,element.get('configid')])
-        if element.tag == 'tabposition':
-            m[-1].append([element.tag,float(element.text),element.get('relativeto')])
-        if element.tag in is_material:
-            m[-1].append([element.tag,element.text,element.get('type'),float(element.get('density'))])
-        if element.tag == 'finpoints':
-            m[-1].append([element.tag]) #finpoints are a group of attributes to the fins and need to be processed as such
-        if element.tag == 'point':
-            m[-1][-1].append([element.tag,element.get('x'),element.get('y')]) #group finpoints with their parent
-    pp.pprint(m)
-getlistfromork('hell.ork')
+            zf = zipfile.ZipFile(filepath,mode='r') #declare the actual file binary
+            return zf.open('rocket.ork') #open the internal file from the zip
+        except zipfile.BadZipFile:
+            return open(filepath,'r')
+            
+    def loadfile(self,filepath: str)->list[dict]:
+        """
+        Loads both direct xml ork's and zipped xml ork (the default in openrocket)
+        It returns a list of dicts. To find the type of the component that the values came from,
+        access self.components[i:int]['cmptype']. This returns a string of the component's name
+        """
+        m=[]
+        has_attributes = ['innertube','bulkhead','tubecoupler','masscomponent','nosecone','parachute','bodytube',
+        'shockcord','freeformfinset','centeringring','motormount','streamer','trapezoidfinset','launchlug','ellipticalfinset',
+        'transition','tubefinset','engineblock']
+        #these lists define where specific elements are processed
+        is_value_string=['finish','shape','masscomponenttype','designation','cd','deployevent','clusterconfiguration',
+                        'clusterscale','clusterrotation']
+        is_value_float=['length','thickness','aftradius','aftshoulderlength','aftshoulderthickness','mass',
+                        'packedlength','packedradius','radialposition','radialdirection','radius','outerradius',
+                        'diameter','delay','linelength','linecount','deploydelay','fincount','rotation','cant','tabheight'
+                        'tablength','filletradius','striplength','stripwidth','packedlength','packedradius','deployaltitude',
+                        'cordlength','tipchord','sweeplength','height','rootchord','foreradius','foreshoulderradius',
+                        'foreshoulderlength','foreshoulderthickness','aftshoulderradius','aftshoulderlength',
+                        'aftshoulderthickness']
+        is_value_bool=['aftshouldercapped','foreshouldercapped','shapeclipped']
+        is_material=['material','linematerial','filletmaterial']
+        root=lxml.etree.parse(self.openfile(filepath))
+
+        for element in root.iter('*'): #get all of the tags in the document
+            if element.tag in has_attributes:
+                m.append({'cmptype':element.tag}) #append the part's name to the list
+            #general processing for elements whose data is stored in element text
+            try:
+                if element.tag in is_value_float:
+                    m[-1][element.tag]=float(element.text)
+                if element.tag in is_value_string: #make the element's payload a float
+                    m[-1][element.tag]=str(element.text)
+                if element.tag in is_value_bool: #make the element's payload a bool
+                    m[-1][element.tag]=bool(element.text)
+            except ValueError:
+                m[-1][element.tag]=element.text #mostly for <sometag>auto</sometag>
+            #special processing for elements that use XML attibutes or do not work with the above
+            if element.tag == 'preset':
+                m[-1][element.tag]={'mfg':element.get('manufacturer'),'pn':element.get('partno'),'hash':element.get('digest')}
+            if element.tag == 'position':
+                m[-1][element.tag]={'pos':float(element.text),'type':element.get('type')}
+            if element.tag == 'motor':
+                m[-1][element.tag]=element.get('configid')
+            if element.tag == 'tabposition':
+                m[-1][element.tag]={'pos':float(element.text),'rel':element.get('relativeto')}
+            if element.tag in is_material:
+                m[-1][element.tag]={'name':element.text,'type':element.get('type'),'density':float(element.get('density'))}
+            if element.tag == 'finpoints':
+                m[-1][element.tag]={} #finpoints are a group of attributes to the fins and need to be processed as such
+            if element.tag == 'point':
+                m[-1][-1][element.tag]={'x':element.get('x'),'y':element.get('y')} #group finpoints with their parent
+        self.components=m
+    def getJson(self):
+        return json.dumps(self.components)
