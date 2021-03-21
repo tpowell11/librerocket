@@ -21,7 +21,7 @@ Traceback (most recent call last):
     import _tkinter # If this fails your Python may not be configured for Tk
 ImportError: libtk8.6.so: cannot open shared object file: No such file or directory
 ~~~
-or a similar error occurs when running the main file, it usually means that the tkinter binaries are missing. This often happens on "minimal" versons of Linux distros. To fix this run:
+or a similar error occurs when running the main file, it usually means that the tkinter binaries are missing. This often happens on "minimal" versons of Linux distros. To fix this run:<br>
 With apt:
 ~~~sh
 sudo apt-get install python3-tk
@@ -38,4 +38,4 @@ rpm -ivh tkinter-2.7-90el7.x86_64.rpm
 
 ### lxml
 lxml is only used to help parse OpenRocket .ork files, if this feature is excluded, lxml is not needed.
-[lxml](https://lxml.de)
+[lxml website](https://lxml.de)
