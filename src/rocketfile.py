@@ -3,7 +3,7 @@ import json
 import zipfile
 import rocket
 from io import bytes, TextIOWrapper
-class orkFile(object):
+class rocketFile(object):
     """contains and manipulates OpenRocket (<=15.03) files
     """
     def openfile(self, filepath: str)->bytes or TextIOWrapper:
@@ -106,7 +106,7 @@ class orkFile(object):
             if element.tag == 'PointList': #converts the <PointList>50,0|75.0,50.0|37,12|0.0,0.0|</PointList> to list[tuple]
                 points = []
                 try: 
-                    for pair in t.split('|'): #split out each pair
+                    for pair in element.text.split('|'): #split out each pair
                         j =tuple(map(float,pair.split(','))) #map each number to float type
                         points.append(j)
                 except: #for .split's insistance on inserting a [...,''] in lists
