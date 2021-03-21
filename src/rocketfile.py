@@ -1,3 +1,4 @@
+from os import execle
 import lxml
 import json
 import zipfile
@@ -98,6 +99,8 @@ class rocketFile(object):
                 m.append({'cmptype':element.tag}) #append the part's name to the list
             #general processing for elements whose data is stored in element text
             if element.tag in is_value_float:
+                m[-1][element.tag]=float(element.text)
+            if element.tag in is_value_int:
                 m[-1][element.tag]=float(element.text)
             if element.tag in is_value_str: #make the element's payload a float
                 m[-1][element.tag]=str(element.text)
