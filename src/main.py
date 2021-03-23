@@ -1,14 +1,23 @@
 # import tkinter module  
-from tkinter import *
+
 from tkinter import messagebox
 from tkinter.ttk import *
 from tkinter import ttk
+import tkinter as tk
 import diagramparts #functions to draw parts to the canvas
 import rocket
 import eventhandlers as eh #all gui event functions
 import partdialogs
 import json #for reading the GUI config json
-class labelledEntry(Tk):
+class app(tk.Tk):
+    "main class"
+    def __init__(self, parent, *args, **kwargs):
+        ttk.Frame.__init__(self, parent, *args, **kwargs)
+        #rest of gui code below
+        ttk.Label(parent,text='test').pack()
+        
+        
+class labelledEntry(tk.Tk):
     def __init__(self,root,label:str):
         self.container = ttk.Frame(root)
         self.label = ttk.Label(self.container,text=label)
@@ -33,15 +42,15 @@ rock.SaveJson('test.json')
 #rock = rocket.loadJsontoObject('test.json')
 #print(rock.parts)
 # creating main tkinter window/toplevel 
-root = Tk() #main window root
+root = tk.Tk() #main window root
 root.title('LibreRocket V0')
 #root.iconbitmap('../img/icon.ico') #TODO make icon
 eh.initsavefile(rock)
 partdialogs.initdialogs(root)
 partdialogs.inittree(rock.parts)
 root.configure(bg=cfg['backgroundColor']) #loads color options from cfg json
-menubar = Menu(root) #top-of-window menubar
-file = Menu(menubar,tearoff=0)
+menubar = tk.Menu(root) #top-of-window menubar
+file = tk.Menu(menubar,tearoff=0)
 file.add_command(label="New")
 file.add_command(label="Open",command=eh.getFilename)  
 file.add_command(label="Save")  
@@ -50,7 +59,7 @@ file.add_command(label="Save")
 file.add_command(label="Save as...")
 file.add_command(label="Close",command=eh.exitApp)
 menubar.add_cascade(label='File',menu=file) 
-tools = Menu(menubar,tearoff=0)
+tools = tk.Menu(menubar,tearoff=0)
 tools.add_command(label='Settings') #launch settings dialog
 tools.add_command(label='User Presets') #launch user presets management dialog
 menubar.add_cascade(label='Tools',menu=tools)
@@ -127,7 +136,7 @@ def maketreeviewTEMP():
             treeview.insert(rock.parts[0].name,'end',item.name,text = item.name)
 maketreeviewTEMP()
 
-canv = Canvas(diagramframe,bd=4)
+canv = tk.Canvas(diagramframe,bd=4)
 canv.grid(row=4,columnspan=3)
 coord = 10, 50, 240, 210
 #arc = canv.create_arc(coord, start=0, extent=150, fill="red")
@@ -145,4 +154,9 @@ mntlist = ttk.Treeview(mountsList)
 mntlist.grid(row=0,column=0)
 
 
-mainloop() 
+tk.mainloop() 
+if __name__ == '__main__':
+    root = tk.Tk()
+    app(root).pack(side='top',fill='both',expand=True)
+    root.mainloop()
+    
