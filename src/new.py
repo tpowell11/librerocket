@@ -1,20 +1,34 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 import eventhandlers as eh
+import rocket
 tl = [
         ['Nosecone','../img/wierstrass.png'],
         ['Bodytube','../img/wierstrass.png'],
         ['Elliptical Finset','../img/wierstrass.png'],
         ['Trapesoidal Finset','../img/wierstrass.png'],
-        ['Freeform Finset','../img/wierstrass.png']
+        ['Freeform Finset','../img/wierstrass.png'],
+        ['Tube Coupler','../img/wierstrass.png']
     ]
+rock = rocket.Rocket('test/test.json',
+                     [
+                        rocket.fileParent('Rocket'),
+                        rocket.tube('alex',24.3,62.3,57.3,0.2),
+                        rocket.tube('jon',32,56,89,0.2),
+                        rocket.tube('a',43,56,9,0.2),
+                            rocket.tube('b',34,25,8.,0.2,'a'),
+                            rocket.tube('c',23,10,7,0.2,'a'), #the part in {} is a set, the rest is tuple
+                        rocket.motor('m',40,24,56,40,{}),
+                        rocket.nosecone('nose',0,24,16,True,10)
+                     ]
+                     )
 class labelledEntry(tk.Tk):
     def __init__(self,main,label:str):
         self.container = ttk.Frame(main)
         self.label = ttk.Label(self.container,text=label)
         self.entry = ttk.Entry(self.container)
-        self.label.grid(row=0, column=0)
-        self.entry.grid(row=0, column=1)
+        self.label.grid(row=1, column=0)
+        self.entry.grid(row=1, column=1)
         
         
 class buttonGrid(ttk.Frame):
@@ -30,7 +44,7 @@ class buttonGrid(ttk.Frame):
         row,col = 0,0
         for pair in parts:
             img = tk.PhotoImage(file=pair[1])
-            ttk.Button(main,text=pair[0],image=img,command=eh.on_click_part).grid(row=row,column=col)
+            ttk.Button(main,text=pair[0],image=img,compound=tk.LEFT,command=eh.on_click_part).grid(row=row,column=col)
             row+=1
             if row == rows:
                 row=0
@@ -45,17 +59,23 @@ class DesignTab(ttk.Frame):
         self.partsframe = ttk.LabelFrame(main, text = 'Parts').grid(row = 1, column = 1)
         self.diagramframe = ttk.LabelFrame(main,text = 'Diagram').grid(row=4,columnspan=2,sticky='nsew')
         buttonGrid(self.partsframe, 4,tl).grid()
+        self.treeview = ttk.Treeview(self.outlineframe).grid(row=1,column=0)
+        
+        self.canvas = tk.Canvas(self.diagramframe).grid(row=4)
         
 
 class MotorTab(ttk.Frame):
     def __init__(self,main,*args,**kwargs):
         ttk.Frame.__init__(self,main,*args,**kwargs)
-        mountsList = ttk.LabelFrame(main, text = 'Motor Mounts')
-        mountsList.grid(row=0,column=0)
-        motorsList = ttk.LabelFrame(main, text = "Motor Configurations")
+        self.mountsList = ttk.LabelFrame(main, text = 'Motor Mounts').grid(row=1,column=0)
+        self.motorsConf = ttk.LabelFrame(main, text = "Motor Configurations").grid(row=1,column=1)
         # Elements for motortab
-        mntlist = ttk.Treeview(mountsList)
-        mntlist.grid(row=0,column=0)
+        mntlist = ttk.Treeview(self.mountsList).grid(row=1,column=0)
+        cnflist = ttk.Treeview(self.motorsConf).grid(row=1,column=1)
+
+class CalcTab(ttk.Frame):
+    def __init__(self,main,*args,**kwargs):
+        ttk.Frame.__init__(self, main,*args,**kwargs)
         
         
 class app(ttk.Frame):
@@ -83,20 +103,20 @@ class app(ttk.Frame):
         root.config(menu=self.menubar) 
         #
         #Tabbed layout configuration
+        
         self.tabControl = ttk.Notebook(main) #tabbed layout for multiple tasks
-        self.designTab = ttk.Frame(self.tabControl) #the rocket design tab
         self.designTab = DesignTab(self.tabControl)
-        self.motorTab = MotorTab(self.tabControl) #the motor selection and data entry tab
-        self.calcTab = ttk.Frame(self.tabControl) #simulation / calculation tab
+        #self.motorTab = MotorTab(self.tabControl) #the motor selection and data entry tab
+        #self.calcTab = CalcTab(self.tabControl) #simulation / calculation tab
         #pushing tabs to container
         self.tabControl.add(self.designTab, text = "Design")
-        self.tabControl.add(self.motorTab, text = "Motor Configuration")
-        self.tabControl.add(self.calcTab, text = "Calculations")
+        #self.tabControl.add(self.motorTab, text = "Motor Configuration")
+        #self.tabControl.add(self.calcTab, text = "Calculations")
         self.tabControl.grid(row=0)
 
 if __name__ == '__main__':
     root = tk.Tk()
     #app(root).pack(side='top',fill='both',expand=True)
-    app(root).grid(column=0,row=0)
+    app(root).grid()
     root.mainloop()
     

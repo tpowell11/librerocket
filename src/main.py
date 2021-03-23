@@ -155,8 +155,3 @@ mntlist.grid(row=0,column=0)
 
 
 tk.mainloop() 
-if __name__ == '__main__':
-    root = tk.Tk()
-    app(root).pack(side='top',fill='both',expand=True)
-    root.mainloop()
-    
