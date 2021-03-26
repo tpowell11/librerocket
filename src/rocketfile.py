@@ -1,9 +1,8 @@
-from os import execle
-import lxml
-import json
-import zipfile
-import rocket
-from io import bytes, TextIOWrapper
+import lxml #xml handling
+import json #json handling
+import zipfile #for working with the zipped xml
+import rocket #main project classes
+from io import bytes, TextIOWrapper #for type annotations
 class rocketFile(object):
     """contains and manipulates OpenRocket (<=15.03) files
     """
@@ -69,8 +68,13 @@ class rocketFile(object):
             if element.tag == 'point':
                 m[-1][-1][element.tag]={'x':element.get('x'),'y':element.get('y')} #group finpoints with their parent
         self.components=m
+<<<<<<< HEAD
         self.importedfiletype='ork15'
     def parseRKT(self,filepath:str)->'list[dict]':
+=======
+        self.importedfiletype='ork15' #annotate the object
+    def parseRKT(self,filepath:str)->list[dict]:
+>>>>>>> 1d2cb34e07ea9c36f323cf0fae08b1cfb21c66cf
         m=[]
         has_attributes = [
             'BodyTube','Ring','LaunchLug','FinSet','MassObject','Streamer','Parachute','NoseCone','Transition'
