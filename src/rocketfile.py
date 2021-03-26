@@ -16,7 +16,7 @@ class rocketFile(object):
         except zipfile.BadZipFile:
             return open(filepath,'r')
             
-    def parseORK(self,filepath: str)->list[dict]:
+    def parseORK(self,filepath: str)->'list[dict]':
         """
         Loads both direct xml ork's and zipped xml ork (the default in openrocket)
         It returns a list of dicts. To find the type of the component that the values came from,
@@ -70,7 +70,7 @@ class rocketFile(object):
                 m[-1][-1][element.tag]={'x':element.get('x'),'y':element.get('y')} #group finpoints with their parent
         self.components=m
         self.importedfiletype='ork15'
-    def parseRKT(self,filepath:str)->list[dict]:
+    def parseRKT(self,filepath:str)->'list[dict]':
         m=[]
         has_attributes = [
             'BodyTube','Ring','LaunchLug','FinSet','MassObject','Streamer','Parachute','NoseCone','Transition'

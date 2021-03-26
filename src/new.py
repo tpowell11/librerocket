@@ -39,12 +39,12 @@ class buttonGrid(ttk.Frame):
     ]\n
     and returns grid of tkinter buttons
     """
-    def __init__(self, main,rows:int,parts:list[list[str]], *args, **kwargs):
-        ttk.Frame.__init__(self,main,*args,**kwargs)
+    def __init__(self, main,rows:int,parts:'list[list[str]]', *args, **kwargs):
+        ttk.Frame.__init__(self,*args,**kwargs)
         row,col = 0,0
         for pair in parts:
             img = tk.PhotoImage(file=pair[1])
-            ttk.Button(main,text=pair[0],image=img,compound=tk.LEFT,command=eh.on_click_part).grid(row=row,column=col)
+            ttk.Button(self,text=pair[0],image=img,compound=tk.LEFT,command=eh.on_click_part).grid(row=row,column=col)
             row+=1
             if row == rows:
                 row=0
@@ -54,10 +54,10 @@ class buttonGrid(ttk.Frame):
 class DesignTab(ttk.Frame):
     "class for the main / design area of the application"
     def __init__(self, main, *args, **kwargs):
-        ttk.Frame.__init__(self,main,*args,**kwargs)
-        self.outlineframe = ttk.LabelFrame(main,text = 'Outline').grid(row=1,column=0)
-        self.partsframe = ttk.LabelFrame(main, text = 'Parts').grid(row = 1, column = 1)
-        self.diagramframe = ttk.LabelFrame(main,text = 'Diagram').grid(row=4,columnspan=2,sticky='nsew')
+        ttk.Frame.__init__(self,*args,**kwargs)
+        self.outlineframe = ttk.LabelFrame(self,text = 'Outline').grid(row=1,column=0)
+        self.partsframe = ttk.LabelFrame(self, text = 'Parts').grid(row = 1, column = 1)
+        self.diagramframe = ttk.LabelFrame(self,text = 'Diagram').grid(row=4,columnspan=2,sticky='nsew')
         buttonGrid(self.partsframe, 4,tl).grid()
         self.treeview = ttk.Treeview(self.outlineframe).grid(row=1,column=0)
         
@@ -66,21 +66,23 @@ class DesignTab(ttk.Frame):
 
 class MotorTab(ttk.Frame):
     def __init__(self,main,*args,**kwargs):
-        ttk.Frame.__init__(self,main,*args,**kwargs)
-        self.mountsList = ttk.LabelFrame(main, text = 'Motor Mounts').grid(row=1,column=0)
-        self.motorsConf = ttk.LabelFrame(main, text = "Motor Configurations").grid(row=1,column=1)
+        ttk.Frame.__init__(self,*args,**kwargs)
+        self.mountsList = ttk.LabelFrame(self, text = 'Motor Mounts').grid(row=1,column=0)
+        self.motorsConf = ttk.LabelFrame(self, text = "Motor Configurations").grid(row=1,column=1)
         # Elements for motortab
-        mntlist = ttk.Treeview(self.mountsList).grid(row=1,column=0)
-        cnflist = ttk.Treeview(self.motorsConf).grid(row=1,column=1)
+        self.mntlist = ttk.Treeview(self.mountsList).grid(row=1,column=0)
+        self.cnflist = ttk.Treeview(self.motorsConf).grid(row=1,column=1)
+        
 
 class CalcTab(ttk.Frame):
     def __init__(self,main,*args,**kwargs):
-        ttk.Frame.__init__(self, main,*args,**kwargs)
+        ttk.Frame.__init__(self,*args,**kwargs)
+        self.tl=ttk.Label(self,text='calc').grid(row=0,column=0)
         
         
 class app(ttk.Frame):
     def __init__(self, main, *args, **kwargs):
-        ttk.Frame.__init__(self, main, *args, **kwargs)
+        ttk.Frame.__init__(self, *args, **kwargs)
         #rest of gui code below
         #ttk.Label(root,text='test').pack()
         #
@@ -104,14 +106,14 @@ class app(ttk.Frame):
         #
         #Tabbed layout configuration
         
-        self.tabControl = ttk.Notebook(main) #tabbed layout for multiple tasks
+        self.tabControl = ttk.Notebook(self) #tabbed layout for multiple tasks
         self.designTab = DesignTab(self.tabControl)
-        #self.motorTab = MotorTab(self.tabControl) #the motor selection and data entry tab
-        #self.calcTab = CalcTab(self.tabControl) #simulation / calculation tab
+        self.motorTab = MotorTab(self.tabControl) #the motor selection and data entry tab
+        self.calcTab = CalcTab(self.tabControl) #simulation / calculation tab
         #pushing tabs to container
         self.tabControl.add(self.designTab, text = "Design")
-        #self.tabControl.add(self.motorTab, text = "Motor Configuration")
-        #self.tabControl.add(self.calcTab, text = "Calculations")
+        self.tabControl.add(self.motorTab, text = "Motor Configuration")
+        self.tabControl.add(self.calcTab, text = "Calculations")
         self.tabControl.grid(row=0)
 
 if __name__ == '__main__':
