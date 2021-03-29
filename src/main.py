@@ -9,6 +9,7 @@ import rocket
 import eventhandlers as eh #all gui event functions
 import partdialogs
 import json #for reading the GUI config json
+import new
 class app(tk.Tk):
     "main class"
     def __init__(self, parent, *args, **kwargs):
@@ -65,13 +66,10 @@ tools.add_command(label='User Presets') #launch user presets management dialog
 menubar.add_cascade(label='Tools',menu=tools)
 root.config(menu=menubar) 
 tabControl = ttk.Notebook(root) #tabbed layout for multiple tasks
-designTab = ttk.Frame(tabControl) #the rocket design tab
-motorTab = ttk.Frame(tabControl) #the motor selection and data entry tab
-calcTab = ttk.Frame(tabControl) #simulation / calculation tab
 #pushing tabs to container
-tabControl.add(designTab, text = "Design")
-tabControl.add(motorTab, text = "Motor Configuration")
-tabControl.add(calcTab, text = "Calculations")
+tabControl.add(new.DesignTab(tabControl), text = "Design")
+tabControl.add(new.MotorTab(tabControl), text = "Motor Configuration")
+tabControl.add(new.CalcTab(tabControl), text = "Calculations")
 tabControl.grid(row=0)
 
 #
@@ -79,79 +77,79 @@ tabControl.grid(row=0)
 #
 
 # Frame definitions for designTab
-outlineframe = ttk.LabelFrame(designTab,text = 'Outline')
-outlineframe.grid(row=1,column=0)
-partsframe = ttk.LabelFrame(designTab, text = 'Parts')
-partsframe.grid(row = 1, column = 1)
-diagramframe = ttk.LabelFrame(designTab,text = 'Diagram')
-diagramframe.grid(row=4)
+# outlineframe = ttk.LabelFrame(designTab,text = 'Outline')
+# outlineframe.grid(row=1,column=0)
+# partsframe = ttk.LabelFrame(designTab, text = 'Parts')
+# partsframe.grid(row = 1, column = 1)
+# diagramframe = ttk.LabelFrame(designTab,text = 'Diagram')
+# diagramframe.grid(row=4)
 
 # Handlers for UI events on Design tab
 
-# 
-parts = ["1","2","3","4","|","5","6","7","8","|","9","10","11","12","|","13"]
-#the following converts a list into an array of buttons based on the placement of | chars
-row,col = 0,0
-for part in parts:
-    if part == "|":
-        col +=1
-        row = -1
-    if part != "|":
-        button = Button(partsframe, text = part, command=eh.on_click_part)
-        button.grid(row = row, column = col)
-    row += 1
+# # 
+# parts = ["1","2","3","4","|","5","6","7","8","|","9","10","11","12","|","13"]
+# #the following converts a list into an array of buttons based on the placement of | chars
+# row,col = 0,0
+# for part in parts:
+#     if part == "|":
+#         col +=1
+#         row = -1
+#     if part != "|":
+#         button = Button(partsframe, text = part, command=eh.on_click_part)
+#         button.grid(row = row, column = col)
+#     row += 1
 
-def on_double_click(event):
-    sel = event.widget.focus()
-    print("selected "+str(sel)+" from treeview")
-    if sel == 'b':
-        messagebox.showinfo("information",partsframe)  
+# def on_double_click(event):
+#     sel = event.widget.focus()
+#     print("selected "+str(sel)+" from treeview")
+#     if sel == 'b':
+#         messagebox.showinfo("information",partsframe)  
 
-# Creating treeview window
-treeview = ttk.Treeview(outlineframe)
-treeviewcontrols = Frame(outlineframe)
-treeviewcontrols.grid(row=0,column=1)
-moveupbutton = ttk.Button(treeviewcontrols, text = "Move up") 
-moveupbutton.grid(row=0)
-movedownbutton = ttk.Button(treeviewcontrols,text = "Move down")
-movedownbutton.grid(row=1)
-deletebutton = ttk.Button(treeviewcontrols, text="Delete") #TODO make this button remove items from the view
-deletebutton.grid(row=2)
+# # Creating treeview window
+# treeview = ttk.Treeview(outlineframe)
+# treeviewcontrols = Frame(outlineframe)
+# treeviewcontrols.grid(row=0,column=1)
+# moveupbutton = ttk.Button(treeviewcontrols, text = "Move up") 
+# moveupbutton.grid(row=0)
+# movedownbutton = ttk.Button(treeviewcontrols,text = "Move down")
+# movedownbutton.grid(row=1)
+# deletebutton = ttk.Button(treeviewcontrols, text="Delete") #TODO make this button remove items from the view
+# deletebutton.grid(row=2)
 
-treeview.bind("<Double-Button-1>", partdialogs.tubedialog)
-treeview.bind("d",eh.on_del_tree)
-treeview.grid(row = 0, column = 0) #grid the view to root
-# Inserting items to the treeview 
-# Inserting parent
-def maketreeviewTEMP():
-    for item in rock.parts:
-        if type(item) == rocket.fileParent:
-            print('found main')
-            treeview.insert('','end',item.name,text = item.name)
-        elif item.parent != '':
-            print('found unparented object')
-            treeview.insert(item.parent,'end',item.name,text = item.name)
-        else:
-            print('found parented object')
-            treeview.insert(rock.parts[0].name,'end',item.name,text = item.name)
-maketreeviewTEMP()
+# treeview.bind("<Double-Button-1>", partdialogs.tubedialog)
+# treeview.bind("d",eh.on_del_tree)
+# treeview.grid(row = 0, column = 0) #grid the view to root
+# # Inserting items to the treeview 
+# # Inserting parent
+# def maketreeviewTEMP():
+#     for item in rock.parts:
+#         if type(item) == rocket.fileParent:
+#             print('found main')
+#             treeview.insert('','end',item.name,text = item.name)
+#         elif item.parent != '':
+#             print('found unparented object')
+#             treeview.insert(item.parent,'end',item.name,text = item.name)
+#         else:
+#             print('found parented object')
+#             treeview.insert(rock.parts[0].name,'end',item.name,text = item.name)
+# maketreeviewTEMP()
 
-canv = tk.Canvas(diagramframe,bd=4)
-canv.grid(row=4,columnspan=3)
-coord = 10, 50, 240, 210
-#arc = canv.create_arc(coord, start=0, extent=150, fill="red")
-tube = diagramparts.drawTube(canv,100,100)
+# canv = tk.Canvas(diagramframe,bd=4)
+# canv.grid(row=4,columnspan=3)
+# coord = 10, 50, 240, 210
+# #arc = canv.create_arc(coord, start=0, extent=150, fill="red")
+# tube = diagramparts.drawTube(canv,100,100)
 
-#
-# Motor Tab
-#
-# Frame definitions for motorTab
-mountsList = LabelFrame(motorTab, text = 'Motor Mounts')
-mountsList.grid(row=0,column=0)
-motorsList = LabelFrame(motorTab, text = "Motor Configurations")
-# Elements for motortab
-mntlist = ttk.Treeview(mountsList)
-mntlist.grid(row=0,column=0)
+# #
+# # Motor Tab
+# #
+# # Frame definitions for motorTab
+# mountsList = LabelFrame(motorTab, text = 'Motor Mounts')
+# mountsList.grid(row=0,column=0)
+# motorsList = LabelFrame(motorTab, text = "Motor Configurations")
+# # Elements for motortab
+# mntlist = ttk.Treeview(mountsList)
+# mntlist.grid(row=0,column=0)
 
 
 tk.mainloop() 

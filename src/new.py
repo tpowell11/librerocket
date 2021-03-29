@@ -55,24 +55,27 @@ class DesignTab(ttk.Frame):
     "class for the main / design area of the application"
     def __init__(self, main, *args, **kwargs):
         ttk.Frame.__init__(self,*args,**kwargs)
-        self.outlineframe = ttk.LabelFrame(self,text = 'Outline').grid(row=1,column=0)
-        self.partsframe = ttk.LabelFrame(self, text = 'Parts').grid(row = 1, column = 1)
-        self.diagramframe = ttk.LabelFrame(self,text = 'Diagram').grid(row=4,columnspan=2,sticky='nsew')
-        buttonGrid(self.partsframe, 4,tl).grid()
-        self.treeview = ttk.Treeview(self.outlineframe).grid(row=1,column=0)
+        self.testlabel=ttk.Label(self,text='test').grid(row=0,column=0)
+        t=ttk.LabelFrame(self,text='test').grid(row=0,column=0)
+        # self.outlineframe = ttk.LabelFrame(self,text = 'Outline').grid(row=1,column=0)
+        # self.partsframe = ttk.LabelFrame(self, text = 'Parts').grid(row = 0, column = 1)
+        # self.diagramframe = ttk.LabelFrame(self,text = 'Diagram').grid(row=4,columnspan=2,sticky='nsew')
+        self.bg = buttonGrid(self, 4,tl).grid(row=1, column=1)
+        self.treeview = ttk.Treeview(self).grid(row=1,column=0)
         
-        self.canvas = tk.Canvas(self.diagramframe).grid(row=4)
+        self.canvas = tk.Canvas(self).grid(row=4)
+        self.grid(row=0,column=0)
         
 
 class MotorTab(ttk.Frame):
     def __init__(self,main,*args,**kwargs):
         ttk.Frame.__init__(self,*args,**kwargs)
-        self.mountsList = ttk.LabelFrame(self, text = 'Motor Mounts').grid(row=1,column=0)
-        self.motorsConf = ttk.LabelFrame(self, text = "Motor Configurations").grid(row=1,column=1)
-        # Elements for motortab
-        self.mntlist = ttk.Treeview(self.mountsList).grid(row=1,column=0)
-        self.cnflist = ttk.Treeview(self.motorsConf).grid(row=1,column=1)
-        
+        # self.mountsList = ttk.LabelFrame(self, text = 'Motor Mounts').grid(row=1,column=0)
+        # self.motorsConf = ttk.LabelFrame(self, text = "Motor Configurations").grid(row=1,column=1)
+        # # Elements for motortab
+        # self.mntlist = ttk.Treeview(self.mountsList).grid(row=1,column=0)
+        # self.cnflist = ttk.Treeview(self.motorsConf).grid(row=1,column=1)
+        # self.grid(row=0,column=0)
 
 class CalcTab(ttk.Frame):
     def __init__(self,main,*args,**kwargs):
@@ -80,45 +83,5 @@ class CalcTab(ttk.Frame):
         self.tl=ttk.Label(self,text='calc').grid(row=0,column=0)
         
         
-class app(ttk.Frame):
-    def __init__(self, main, *args, **kwargs):
-        ttk.Frame.__init__(self, *args, **kwargs)
-        #rest of gui code below
-        #ttk.Label(root,text='test').pack()
-        #
-        # Top menu
-        #
-        self.menubar = tk.Menu(main) #top-of-window menubar
-        self.file = tk.Menu(self.menubar,tearoff=0)
-        self.file.add_command(label="New")
-        self.file.add_command(label="Open",command=eh.getFilename)  
-        self.file.add_command(label="Save")  
-        #file.add_command(label="Save as...",command=lambda rocket: eh.saveAs(rocket))
-        #file.add_command(label="Save as...",command=eh.saveAs(rock))  
-        self.file.add_command(label="Save as...")
-        self.file.add_command(label="Close",command=eh.exitApp)
-        self.menubar.add_cascade(label='File',menu=self.file) 
-        tools = tk.Menu(self.menubar,tearoff=0)
-        tools.add_command(label='Settings') #launch settings dialog
-        tools.add_command(label='User Presets') #launch user presets management dialog
-        self.menubar.add_cascade(label='Tools',menu=tools)
-        root.config(menu=self.menubar) 
-        #
-        #Tabbed layout configuration
-        
-        self.tabControl = ttk.Notebook(self) #tabbed layout for multiple tasks
-        self.designTab = DesignTab(self.tabControl)
-        self.motorTab = MotorTab(self.tabControl) #the motor selection and data entry tab
-        self.calcTab = CalcTab(self.tabControl) #simulation / calculation tab
-        #pushing tabs to container
-        self.tabControl.add(self.designTab, text = "Design")
-        self.tabControl.add(self.motorTab, text = "Motor Configuration")
-        self.tabControl.add(self.calcTab, text = "Calculations")
-        self.tabControl.grid(row=0)
 
-if __name__ == '__main__':
-    root = tk.Tk()
-    #app(root).pack(side='top',fill='both',expand=True)
-    app(root).grid()
-    root.mainloop()
     
