@@ -2,6 +2,7 @@
 # all classes which store components have a getData method which returns a dict, which is then saved to a file by Rocket.SaveJson(self, path)
 import json
 import math
+import curves
 #
 # main class
 #
@@ -141,6 +142,9 @@ class motor(component):
                 "curve":self.curve
             }
         }
+    def getTCorgdigest(self):
+        "gets the ThrustCurve.org digest string for the motor"
+
 class tube(component):
     "fields for any tube component in a rocket"
     def __init__(self,Name: str, Mass: float, Length: float, Diameter: float, WallTh: float, Parent = '', isMotorHolder=False):
