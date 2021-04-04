@@ -1,8 +1,8 @@
 #classes for LibreRocket
 # all classes which store components have a getData method which returns a dict, which is then saved to a file by Rocket.SaveJson(self, path)
-import json
+import json #json file handling
 import math
-import curves
+import curves #used in 
 #
 # main class
 #
@@ -118,7 +118,7 @@ class component(object):
 class motor(component):
     objtype=__name__
     "Fields for motors"
-    def __init__(self,Name: str, Itot: float, Diameter: float, Mass: float, Length: float, Curve: dict, Parent = '', Position = 0.0):
+    def __init__(self,Name: str, Itot: float, Diameter: float, Mass: float, Length: float, Curve: curves.curveMotor, Parent = '', Position = 0.0):
         "Moves data into the correct areas"
         self.name = Name
         self.parent = Parent
