@@ -9,14 +9,8 @@ import rocket
 import eventhandlers as eh #all gui event functions
 import partdialogs
 import json #for reading the GUI config json
-class app(tk.Tk):
-    "main class"
-    def __init__(self, parent, *args, **kwargs):
-        ttk.Frame.__init__(self, parent, *args, **kwargs)
-        #rest of gui code below
-        ttk.Label(parent,text='test').pack()
-        
-        
+import new
+  
 class labelledEntry(tk.Tk):
     def __init__(self,root,label:str):
         self.container = ttk.Frame(root)
@@ -69,7 +63,7 @@ designTab = ttk.Frame(tabControl) #the rocket design tab
 motorTab = ttk.Frame(tabControl) #the motor selection and data entry tab
 calcTab = ttk.Frame(tabControl) #simulation / calculation tab
 #pushing tabs to container
-tabControl.add(designTab, text = "Design")
+tabControl.add(new.DesignTab, text = "Design")
 tabControl.add(motorTab, text = "Motor Configuration")
 tabControl.add(calcTab, text = "Calculations")
 tabControl.grid(row=0)
@@ -79,6 +73,7 @@ tabControl.grid(row=0)
 #
 
 # Frame definitions for designTab
+
 outlineframe = ttk.LabelFrame(designTab,text = 'Outline')
 outlineframe.grid(row=1,column=0)
 partsframe = ttk.LabelFrame(designTab, text = 'Parts')

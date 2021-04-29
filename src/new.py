@@ -41,7 +41,7 @@ class buttonGrid(ttk.Frame):
     and returns grid of tkinter buttons
     """
     def __init__(self, main,rows:int,parts:'list[list[str]]', *args, **kwargs):
-        ttk.Frame.__init__(self,*args,**kwargs)
+        ttk.Frame.__init__(main,*args,**kwargs)
         row,col = 0,0
         for pair in parts:
             img = tk.PhotoImage(file=pair[1])
@@ -59,7 +59,7 @@ class DesignTab(ttk.Frame):
         # self.outlineframe = ttk.LabelFrame(self,text = 'Outline').grid(row=1,column=0)
         # self.partsframe = ttk.LabelFrame(self, text = 'Parts').grid(row = 1, column = 1)
         # self.diagramframe = ttk.LabelFrame(self,text = 'Diagram').grid(row=4,columnspan=2,sticky='nsew')
-        self.bg = buttonGrid(self, 4,tl).grid(row=1,column=1)
+        #self.bg = buttonGrid(self, 4,tl).grid(row=1,column=1)
         self.treeview = ttk.Treeview(self).grid(row=1,column=0)
         
         self.canvas = tk.Canvas(self).grid(row=4)
@@ -80,11 +80,11 @@ class MotorTab():
 
 class CalcTab(ttk.Frame):
     def __init__(self,main,*args,**kwargs):
-        ttk.Frame.__init__(self,*args,**kwargs)
+        ttk.Frame.__init__(main,*args,**kwargs)
         self.tl=ttk.Label(self,text='calc').grid(row=0,column=0)
         
         
-class app():
+class app(tk.Tk):
     def __init__(self, main, *args, **kwargs):
         self.r = ttk.Frame(main)
         #rest of gui code below
@@ -106,7 +106,7 @@ class app():
         tools.add_command(label='Settings') #launch settings dialog
         tools.add_command(label='User Presets') #launch user presets management dialog
         self.menubar.add_cascade(label='Tools',menu=tools)
-        root.config(menu=self.menubar) 
+        #root.config(menu=self.menubar) 
         #
         #Tabbed layout configuration
         
@@ -123,7 +123,3 @@ class app():
         self.tabControl.grid(row=0)
 
 
-root = tk.Tk()
-#app(root).pack(side='top',fill='both',expand=True)
-app(root).r.grid()
-root.mainloop()

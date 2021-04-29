@@ -70,7 +70,7 @@ class ENGfile(object):
                 self.massCurve.append(float(item.get('m')))
                 self.cgCurve.append(float(item.get('cg')))
 
-    def generateMotor(self,Name,Parent='',Position=0.0)->rocket.motor:
+    def generateMotor(self,Name,Parent='',Position=0.0):
         "returns a rocket.motor() object"
         return rocket.motor(Name,self.atrrib['Itot'],self.atrrib['dia'])
 
